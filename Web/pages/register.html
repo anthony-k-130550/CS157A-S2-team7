@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register - Study Session</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --panel: rgba(255, 255, 255, 0.84);
+      --panel-strong: #ffffff;
+      --text: #172033;
+      --muted: #64708a;
+      --line: rgba(23, 32, 51, 0.08);
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.12);
+      --success: #0f766e;
+      --danger: #b42318;
+      --danger-soft: #fef3f2;
+      --shadow: 0 18px 45px rgba(23, 32, 51, 0.08);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(79, 70, 229, 0.08), transparent 30%),
+        radial-gradient(circle at right center, rgba(14, 165, 233, 0.07), transparent 24%),
+        linear-gradient(180deg, #fafbff 0%, #f4f6fb 100%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(14px);
+      background: rgba(246, 247, 251, 0.72);
+      border-bottom: 1px solid rgba(23, 32, 51, 0.06);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #4f46e5, #2563eb);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(79, 70, 229, 0.22);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 180ms ease;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5, #2563eb);
+      color: #fff;
+      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.24);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.82);
+      border-color: var(--line);
+      color: var(--text);
+    }
+
+    .page {
+      padding: 52px 0 72px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 480px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .intro-card,
+    .form-card {
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 28px;
+      box-shadow: 0 24px 60px rgba(23, 32, 51, 0.1);
+      backdrop-filter: blur(14px);
+    }
+
+    .intro-card {
+      padding: 34px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 54px);
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+    }
+
+    .intro-text {
+      margin: 18px 0 0;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--muted);
+      max-width: 620px;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .feature-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .feature-item:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .feature-number {
+      min-width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: #eef2ff;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .feature-item strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .feature-item span {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .form-card {
+      padding: 28px;
+    }
+
+    .form-top {
+      margin-bottom: 22px;
+    }
+
+    .form-top h2 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.03em;
+    }
+
+    .form-top p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.96);
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(79, 70, 229, 0.45);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    }
+
+    .helper {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .message {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .message.success {
+      display: block;
+      background: #ecfdf3;
+      color: var(--success);
+      border: 1px solid rgba(15, 118, 110, 0.12);
+    }
+
+    .message.error {
+      display: block;
+      background: var(--danger-soft);
+      color: var(--danger);
+      border: 1px solid rgba(180, 35, 24, 0.12);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    .form-actions .btn {
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .footer-link {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .footer-link a {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    @media (max-width: 980px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        padding-top: 28px;
+      }
+
+      .nav-inner {
+        flex-wrap: wrap;
+      }
+
+      .nav-actions {
+        width: 100%;
+      }
+
+      .nav-actions .btn {
+        flex: 1;
+      }
+
+      h1 {
+        font-size: 38px;
+      }
+
+      .intro-card,
+      .form-card {
+        border-radius: 22px;
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html">
+        <div class="brand-badge">SS</div>
+        <span>Study Session</span>
+      </a>
+
+      <div class="nav-actions">
+        <a class="btn btn-secondary" href="../index.html">Home</a>
+        <a class="btn btn-primary" href="login.html">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="container grid">
+      <section class="intro-card">
+        <div class="eyebrow">Functional Requirement 1</div>
+        <h1>Create your Study Session account.</h1>
+        <p class="intro-text">
+          Register with your full name, email, password, department, and role. This page is designed
+          to demonstrate the account creation flow for the project code review milestone and aligns
+          with the project’s <strong>Users</strong>, <strong>Students</strong>, and <strong>Admins</strong> tables.
+        </p>
+
+        <div class="feature-list">
+          <div class="feature-item">
+            <div class="feature-number">1</div>
+            <div>
+              <strong>Collects core account details</strong>
+              <span>Users enter the same main fields described in the project report and schema.</span>
+            </div>
+          </div>
+
+          <div class="feature-item">
+            <div class="feature-number">2</div>
+            <div>
+              <strong>Checks duplicate email addresses</strong>
+              <span>The page prevents creating a second account with an email that already exists.</span>
+            </div>
+          </div>
+
+          <div class="feature-item">
+            <div class="feature-number">3</div>
+            <div>
+              <strong>Supports Student and Admin roles</strong>
+              <span>New accounts can be created as either type to reflect the two main user groups.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-card">
+        <div class="form-top">
+          <h2>Register</h2>
+          <p>Create a new account to continue into the Study Session workflow.</p>
+        </div>
+
+        <form id="registerForm">
+          <div class="field-grid">
+            <div class="field">
+              <label for="fullname">Full Name</label>
+              <input type="text" id="fullname" placeholder="Enter your full name" required />
+            </div>
+
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder="Enter your email" required />
+            </div>
+
+            <div class="field">
+              <label for="password">Password</label>
+              <input type="password" id="password" placeholder="Create a password" required />
+            </div>
+
+            <div class="field">
+              <label for="department">Department</label>
+              <input type="text" id="department" placeholder="Example: Computer Science" required />
+            </div>
+
+            <div class="field">
+              <label for="role">User Role</label>
+              <select id="role" required>
+                <option value="student">Student</option>
+                <option value="admin">Admin</option>
+              </select>
+              <div class="helper">
+                This project currently supports Student and Admin account types.
+              </div>
+            </div>
+          </div>
+
+          <div id="message" class="message"></div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Create Account</button>
+            <a class="btn btn-secondary" href="login.html">Already have an account?</a>
+          </div>
+        </form>
+
+        <div class="footer-link">
+          Have an account already?
+          <a href="login.html">Go to login</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const registerForm = document.getElementById("registerForm");
+    const messageBox = document.getElementById("message");
+
+    registerForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const fullname = document.getElementById("fullname").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const password = document.getElementById("password").value;
+      const department = document.getElementById("department").value.trim();
+      const role = document.getElementById("role").value;
+
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+
+      const exists = users.find(user => user.email === email);
+
+      if (exists) {
+        messageBox.className = "message error";
+        messageBox.textContent = "This email is already registered. Please use a different email or log in instead.";
+        return;
+      }
+
+      const newUser = {
+        fullname,
+        email,
+        password,
+        department,
+        role
+      };
+
+      users.push(newUser);
+      localStorage.setItem("users", JSON.stringify(users));
+
+      messageBox.className = "message success";
+      messageBox.textContent = "Account created successfully. You can now log in with your email and password.";
+
+      registerForm.reset();
+    });
+  </script>
+</body>
+</html>
