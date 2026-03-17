@@ -32,7 +32,7 @@
             ResultSet rs = stmt.executeQuery("SELECT * FROM Student");
 
             while (rs.next()) {
-         out.println("<tr>" + "<td>" +  rs.getInt(1) + "</td>"+ "<td>" +    rs.getString(2) + "</td>"+   "<td>" + rs.getString(3) + "</td>"  + "</tr>");
+               out.println("<tr>" + "<td>" +  rs.getInt(1) + "</td>"+ "<td>" +    rs.getString(2) + "</td>"+   "<td>" + rs.getString(3) + "</td>"  + "</tr>");
             }
             rs.close();
             stmt.close();
