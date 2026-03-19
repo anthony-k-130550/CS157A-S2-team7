@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS study_sessions_db;
-CREATE DATABASE study_sessions_db;
-USE study_sessions_db;
+DROP DATABASE IF EXISTS project;
+CREATE DATABASE project;
+USE project;
 
 CREATE TABLE Users (
     UserID INTEGER PRIMARY KEY,
@@ -13,7 +13,6 @@ CREATE TABLE Users (
 CREATE TABLE Students (
     UserID INTEGER PRIMARY KEY,
     StudentID INTEGER UNIQUE,
-    Disabled BOOLEAN,
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
