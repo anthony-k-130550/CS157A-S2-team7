@@ -49,7 +49,8 @@
     	          //response.sendRedirect("home.jsp");	
     	          int userID = rs.getInt(1); //get the userID to see if admin or normal user
     	          String redirectQuery = "SELECT 1 FROM admins WHERE userID = '" + userID + "'";
-    	              	          
+    				
+    	          session.setAttribute("userID", userID);
     	          //if the userID is in the admin table, then go to admin dashboard
     	          //otherwise, go to the normal user/student dashboard
     	          ResultSet redirectResult = stmt.executeQuery(redirectQuery);
@@ -57,7 +58,7 @@
     	        	  session.setAttribute("role", "admin");
         	          response.sendRedirect("admin_dashboard.jsp");	
     	          } else {
-    	        	  session.setAttribute("role", "user");	
+    	        	  session.setAttribute("role", "student");	
     	        	  response.sendRedirect("userhome.jsp");
     	          }
     	        } else {

@@ -23,7 +23,7 @@
 	<label>Building Name:</label>
 	<input type="text" name="buildingName"><br><br>
 	
-	<!-- Room ID -->
+	<!-- Room ID -->	
 	<label>Room ID:</label>
 	<input type="number" name="roomID"><br><br>
 	
@@ -50,40 +50,45 @@
 	
 	//building the string based off of the chosen values
 	StringBuilder query = new StringBuilder();
-	query.append("SELECT * FROM studysession WHERE TRUE "); //the true is a placeholder for this, since can't have nothing after where
+	query.append("SELECT * FROM studysession WHERE SessionID NOT IN (SELECT SessionID FROM deletes)"); //always making sure that the sessions are not in the deletes page
 	if (!(dept == null || dept.isBlank())) {
 		query.append("AND SessionID IN (SELECT SessionID FROM studyingfor WHERE CourseID IN (SELECT CourseID FROM course WHERE Department LIKE '%" + 
 		dept + 
 		"%'))");
 	}
 	
+	//course number filter
 	if (!(classNum == null || classNum.isBlank())) {
 		query.append("AND SessionID IN (SELECT SessionID FROM studyingfor WHERE CourseID IN (SELECT CourseID FROM course WHERE CourseNumber = '" + 
 		classNum + 
 		"'))");
 	}
 	
+	//day filter
 	if (!(day == null || day.isBlank())) {
 		query.append("AND Day = '" + day + "'");
 	}
 	
+	
+	//building filter
 	if (!(building == null || building.isBlank())) {
 		query.append("AND SessionID in (SELECT SessionID FROM takesplacein WHERE BuildingName LIKE '%" +
 		building + 
-		"%')");
+		"%') AND EXISTS (SELECT * FROM building WHERE buildingName LIKE '%" + building + "%')"); //check to see if building is in the building list
 	}
 	
+	//room filter
 	if (!(room == null || room.isBlank())) {
 		query.append("AND SessionID in (SELECT SessionID FROM takesplacein WHERE RoomID = '" +
 		room + 
-		"')");
+		"') AND EXISTS (SELECT * FROM room WHERE RoomID =" + room + ")");
 	}
 	
 	String queryString = query.toString();
 	
-	String db = "Kieu";
+	String db = "project";
     String user;
-      user = "root";
+    user = "root";
     String password = "CS157A";
     try {
         java.sql.Connection con;
@@ -93,6 +98,8 @@
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(queryString);
 
+        //header along with table definition
+        out.println("<h1>Available Study Sessions</h1>");
         out.println("<table border = \"1\">");
         //title row of the table
         out.println("<tr>" + "<td>Session ID</td>" + 
@@ -114,7 +121,7 @@
   	        	"<td>" + rs.getDate(5) + "</td>" +
   	        	"<td>" + rs.getInt(6) + "</td>" +
 	        	"<td>" + rs.getString(7) + "</td>" +
-  	        	"<td><button>Details</button></td>" + 
+  	        	"<td><button onclick=\"window.location.href='individual_session_view.jsp?sessionID=" + rs.getInt(1) + "'\">Details</button></td>" + 
    	        	"</tr>");
    	           	out.println("<br>");
         }

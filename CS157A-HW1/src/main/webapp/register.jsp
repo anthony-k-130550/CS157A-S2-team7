@@ -54,19 +54,19 @@
 	         Statement stmt = con.createStatement();
 	         con.setAutoCommit(false); //added this just in case we can insert into users but not students. Want to commit both at the same time
 	         
-	         String query1 = "INSERT INTO users (UserID, FullName, Email, Password, Department) VALUES ("
+	         String insert1 = "INSERT INTO users (UserID, FullName, Email, Password, Department) VALUES ("
 	        		 	+ userID + ", '"
 	        		    + fullname + "', '"
 	        		    + email + "', '"
 	        		    + password + "', '"
 	        		    + dept + "')";
 	         
-			String query2 = "INSERT INTO students (UserID, StudentID) VALUES (" 
+			String insert2 = "INSERT INTO students (UserID, StudentID) VALUES (" 
 					+ userID + ", "
 					+ studentID + ")";
 			
-	         int rs1 = stmt.executeUpdate(query1);
-	         int rs2 = stmt.executeUpdate(query2);
+	         int rs1 = stmt.executeUpdate(insert1);
+	         int rs2 = stmt.executeUpdate(insert2);
 	         
 	         if ((rs1 > 0) && (rs2 > 0)) {
 	        	 con.commit(); //only save if both work
