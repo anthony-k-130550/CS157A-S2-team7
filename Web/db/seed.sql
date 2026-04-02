@@ -22,17 +22,17 @@ INSERT INTO Users (UserID, FullName, Email, Password, Department) VALUES
 (19, 'Nathan Scott', 'nathan.scott@gmail.com', 's901', 'Biology'),
 (20, 'Zoe Ramirez', 'zoe.ramirez@gmail.com', 't012', 'Chemistry');
 
-INSERT INTO Students (UserID, StudentID, Disabled) VALUES
-(1, 58347, FALSE),
-(2, 91426, FALSE),
-(3, 70215, FALSE),
-(4, 46839, FALSE),
-(5, 65124, FALSE),
-(6, 83710, FALSE),
-(7, 59263, FALSE),
-(8, 74018, FALSE),
-(9, 32659, FALSE),
-(10, 90541, FALSE);
+INSERT INTO Students (UserID, StudentID) VALUES
+(1, 58347),
+(2, 91426),
+(3, 70215),
+(4, 46839),
+(5, 65124),
+(6, 83710),
+(7, 59263),
+(8, 74018),
+(9, 32659),
+(10, 90541);
 
 INSERT INTO Admins (UserID, AdminID) VALUES
 (11, 0),
