@@ -41,7 +41,7 @@ CREATE TABLE Room (
 );
 
 CREATE TABLE StudySession (
-    SessionID INTEGER PRIMARY KEY,
+    SessionID INTEGER AUTO_INCREMENT PRIMARY KEY,
     Title VARCHAR(100),
     StartTime TIME,
     EndTime TIME,

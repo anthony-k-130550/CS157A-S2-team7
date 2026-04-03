@@ -1,4 +1,4 @@
-USE study_sessions_db;
+USE project;
 
 INSERT INTO Users (UserID, FullName, Email, Password, Department) VALUES
 (1, 'Bob Dylan', 'bob.dylan@gmail.com', 'bd123', 'Computer Science'),
