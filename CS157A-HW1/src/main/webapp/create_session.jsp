@@ -213,11 +213,11 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
                 out.println("<p style='color:red;'> failed to update Creates table.</p>");
             }
             
-            
+            	
             if (rs != null) rs.close();
             if (ps != null) ps.close();
-            //after submitting redirecting to userhome for now
-            response.sendRedirect("userhome.jsp");
+            //after submitting redirecting to view sessions for now
+            response.sendRedirect("view_sessions.jsp");
            
            
         }

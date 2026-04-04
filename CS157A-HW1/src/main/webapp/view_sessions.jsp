@@ -1,0 +1,137 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*"%>
+<%@ include file="navbar.jsp" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+  
+
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>SessionID</th>
+            <th>Title</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Day</th>
+            <th>Capacity</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+
+<%
+	
+	String db = "project";
+    String user;
+    user = "root";
+    String password = "CS175ALG";
+    java.sql.Connection con = null;
+
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?autoReconnect=true&useSSL=false", user, password);
+		
+        Integer userID = (Integer) session.getAttribute("userID");
+        
+    	out.println("<h1>CREATED</h1>");
+
+        //Get session created by the user
+		        
+		String sql = "SELECT us.* FROM studysession us JOIN creates s ON us.sessionID = s.sessionID WHERE s.StudentUserID = ?";
+		
+        PreparedStatement ps = con.prepareStatement(sql);
+        
+        ps.setInt(1, userID);
+        
+        ResultSet rs = ps.executeQuery();
+        
+        
+        //Display session created by the user
+        while (rs.next()) {
+        	out.println("<tr>");
+            out.println("<td>" + rs.getInt("sessionID") + "</td>");
+            out.println("<td>" + rs.getString("title") + "</td>");
+            out.println("<td>" + rs.getTime("startTime") + "</td>");
+            out.println("<td>" + rs.getTime("endTime") + "</td>");
+            out.println("<td>" + rs.getDate("day") + "</td>");
+            out.println("<td>" + rs.getInt("capacity") + "</td>");
+            out.println("<td>" + rs.getString("description") + "</td>");
+            out.println("</tr>");
+        }
+        
+        out.println("</tbody>");
+        out.println("</table>");
+		
+        if(rs != null) rs.close();
+        if(ps != null) ps.close();
+        
+    	out.println("<h1>JOINED</h1>");
+    	
+		sql = "SELECT us.* FROM studysession us JOIN joins s ON us.sessionID = s.sessionID WHERE s.StudentUserID = ?";
+		
+        ps = con.prepareStatement(sql);
+        
+        ps.setInt(1, userID);
+        
+        rs = ps.executeQuery();
+        
+        
+        out.println("<table border='1'>");
+        out.println("<thead>");
+        out.println("<tr>");
+        out.println("<th>SessionID</th>");
+        out.println("<th>Title</th>");
+        out.println("<th>Start Time</th>");
+        out.println("<th>End Time</th>");
+        out.println("<th>Day</th>");
+        out.println("<th>Capacity</th>");
+        out.println("<th>Description</th>");
+        out.println("</tr>");
+        out.println("</thead>");
+        out.println("<tbody>");
+        
+        //Display session created by the user
+        while (rs.next()) {
+        	out.println("<tr>");
+            out.println("<td>" + rs.getInt("sessionID") + "</td>");
+            out.println("<td>" + rs.getString("title") + "</td>");
+            out.println("<td>" + rs.getTime("startTime") + "</td>");
+            out.println("<td>" + rs.getTime("endTime") + "</td>");
+            out.println("<td>" + rs.getDate("day") + "</td>");
+            out.println("<td>" + rs.getInt("capacity") + "</td>");
+            out.println("<td>" + rs.getString("description") + "</td>");
+            out.println("</tr>");
+        }
+        
+        out.println("</tbody>");
+        out.println("</table>");
+		
+        if(rs != null) rs.close();
+        if(ps != null) ps.close();
+
+        
+        
+    }catch(SQLException
+    		e) {
+    	out.println("SQLException caught: " + e.getMessage());
+    	e.printStackTrace();
+    }  finally {
+        if (con != null) {
+            try { con.close(); } catch (Exception e) {}
+        }
+    }
+	
+
+%>
+
+</body>
+</html>
