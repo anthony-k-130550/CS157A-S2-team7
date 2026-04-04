@@ -4,7 +4,7 @@ class MysqlCon{
 	public static void main(String args[]){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/Kieu?autoReconnect=true&useSSL=false","root","CS157A");
+			Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/Kieu?autoReconnect=e&useSSL=false","root","CS157A");
 			//Kieu is my database name, root is username and CS157A is password
 			Statement stmt=con.createStatement();
 			ResultSet rs=stmt.executeQuery("select * from Student");

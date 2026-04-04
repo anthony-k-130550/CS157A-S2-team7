@@ -16,12 +16,11 @@
      String db = "Kieu";
         String user; // assumes database name is the same as username
           user = "root";
-        String password = "CS157A";
+        String password = "CS175ALG";
         try {
             java.sql.Connection con;
-            Class.forName("com.mysql.jdbc.Driver");
-
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Kieu?autoReconnect=true&useSSL=false", user, password);
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/garcia?autoReconnect=true&useSSL=false", user, password);
 
             out.println(db + " database successfully opened.<br/><br/>");
 

@@ -2,6 +2,8 @@
     pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="java.sql.ResultSet" %>
+<%@ include file="navbar.jsp" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -195,8 +197,25 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
             if (ps != null) ps.close();
             
             
-            //TOOD: update the crates tables
+            //Update the crates tables
+            sql = "INSERT INTO creates (StudentUserID, SessionID, SuccessStatus) VALUES (?, ?, ?)";
+            ps = con.prepareStatement(sql);
+            Integer userID = (Integer) session.getAttribute("userID");
+            ps.setInt(1, userID);
+            ps.setInt(2,sessionId);
+            ps.setString(3, "successfully created");
             
+			rows = ps.executeUpdate();
+            
+            if (rows > 0) {
+                out.println("<p style='color:green;'>Creates table upadted</p>");
+            } else {
+                out.println("<p style='color:red;'> failed to update Creates table.</p>");
+            }
+            
+            
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
             //after submitting redirecting to userhome for now
             response.sendRedirect("userhome.jsp");
            

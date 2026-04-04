@@ -1,4 +1,5 @@
 <%@ page import="java.sql.*"%>
+<%@ include file="navbar.jsp" %>
 <html>
 <head>
   <title>Study Session Account Registration</title>
@@ -24,7 +25,7 @@
      String db = "project";
      String user; // assumes database name is the same as username
      user = "root";
-     String databasePassword = "CS157A";
+     String databasePassword = "CS175ALG";
      
      String fullname = request.getParameter("fullname");
      String email;

@@ -1,4 +1,6 @@
 <%@ page import="java.sql.*"%>
+<%@ include file="navbar.jsp" %>
+
 <html>
 <head>
   <title>Search Study Sessions</title>
@@ -89,11 +91,11 @@
 	String db = "project";
     String user;
     user = "root";
-    String password = "CS157A";
+    String password = "CS175ALG";
     try {
         java.sql.Connection con;
-        Class.forName("com.mysql.jdbc.Driver");
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Project?autoReconnect=true&useSSL=false", user, password);
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?autoReconnect=true&useSSL=false", user, password);
 
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(queryString);

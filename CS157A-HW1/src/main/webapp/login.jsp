@@ -1,4 +1,5 @@
 <%@ page import="java.sql.*"%>
+<%@ include file="navbar.jsp" %>
 <html>
 <head>
   <title>Study Session Account Registration</title>
@@ -18,10 +19,10 @@
   </form>
 
     <%
-     String db = "project";
+     //String db = "project";
      String user; // assumes database name is the same as username
      user = "root";
-     String databasePassword = "CS157A";
+     String databasePassword = "CS175ALG";
      
      String email = request.getParameter("email");
      String password = request.getParameter("password");
@@ -31,12 +32,9 @@
     	        Connection con;
     	        Class.forName("com.mysql.jdbc.Driver");
 
-    	        con = DriverManager.getConnection(
-    	          "jdbc:mysql://localhost:3306/project?autoReconnect=true&useSSL=false",
-    	          user,
-    	          databasePassword
-    	        );
-
+    	        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?autoReconnect=true&useSSL=false",user, databasePassword);
+				
+    	        
     	        Statement stmt = con.createStatement();
 
     	        String query = "SELECT * FROM users WHERE Email = '" 
