@@ -11,7 +11,19 @@
 </head>
 <body>
 
-  
+<script>
+function getReason(sessionID, userID) {
+  let input = prompt("Enter reason:");
+
+  if (input !== null && input.trim() !== "") {
+    window.location.href = "delete_intermediate.jsp?sessionID=" 
+      + sessionID + "&userID=" + userID + "&deleteReason=" + encodeURIComponent(input);
+  } else {
+    alert("Input required!");
+  }
+}
+</script>
+ 
 
 
 <table border="1">
@@ -24,6 +36,7 @@
             <th>Day</th>
             <th>Capacity</th>
             <th>Description</th>
+            <th>Delete</th>
         </tr>
     </thead>
     <tbody>
@@ -54,9 +67,19 @@
         
         ResultSet rs = ps.executeQuery();
         
+        Statement stmt = con.createStatement();
+        
+       
         
         //Display session created by the user
         while (rs.next()) {
+        	
+        	String deletedQuery = "SELECT * FROM deletes WHERE SessionID=?";
+            PreparedStatement psDeleted = con.prepareStatement(deletedQuery);
+            psDeleted.setInt(1, rs.getInt(1));
+            ResultSet rsDeleted = psDeleted.executeQuery();
+        	
+            if (!rsDeleted.next()) {
         	out.println("<tr>");
             out.println("<td>" + rs.getInt("sessionID") + "</td>");
             out.println("<td>" + rs.getString("title") + "</td>");
@@ -65,7 +88,12 @@
             out.println("<td>" + rs.getDate("day") + "</td>");
             out.println("<td>" + rs.getInt("capacity") + "</td>");
             out.println("<td>" + rs.getString("description") + "</td>");
+            out.println("<td><button onclick=\"getReason(" + rs.getInt(1) + "," + userID + ")\">Delete</button></td>");
             out.println("</tr>");
+            }
+            if(psDeleted != null) psDeleted.close();
+            if(rsDeleted != null) rsDeleted.close();
+			
         }
         
         out.println("</tbody>");
@@ -95,6 +123,7 @@
         out.println("<th>Day</th>");
         out.println("<th>Capacity</th>");
         out.println("<th>Description</th>");
+        out.println("<th>Leave</th>");
         out.println("</tr>");
         out.println("</thead>");
         out.println("<tbody>");
@@ -109,6 +138,8 @@
             out.println("<td>" + rs.getDate("day") + "</td>");
             out.println("<td>" + rs.getInt("capacity") + "</td>");
             out.println("<td>" + rs.getString("description") + "</td>");
+            out.println("<td><button onclick=\"window.location.href='leave_intermediate.jsp?sessionID=" 
+            	    + rs.getInt(1) + "&userID=" + userID + "'\">Leave</button></td>");
             out.println("</tr>");
         }
         

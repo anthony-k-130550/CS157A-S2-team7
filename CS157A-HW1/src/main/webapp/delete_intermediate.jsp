@@ -21,7 +21,7 @@
 				con.setAutoCommit(false);
 	            Statement stmt = con.createStatement();
 	            
-	            String deletedQuery = "SELECT * FROM DELETES WHERE SessionID=" + sessionID;
+	            String deletedQuery = "SELECT * FROM deletes WHERE SessionID=" + sessionID;
 	            ResultSet deleted = stmt.executeQuery(deletedQuery);
 	            
 	            if (!deleted.next()) { //safety check to see if the session has already been deleted
