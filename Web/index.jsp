@@ -496,8 +496,8 @@
       </div>
 
       <div class="nav-actions">
-        <a class="btn btn-secondary" href="pages/login.html">Login</a>
-        <a class="btn btn-primary" href="pages/register.html">Register</a>
+        <a class="btn btn-secondary" href="pages/login.jsp">Login</a>
+        <a class="btn btn-primary" href="pages/register.jsp">Register</a>
       </div>
     </div>
   </nav>
@@ -515,8 +515,8 @@
           </p>
 
           <div class="hero-actions">
-            <a class="btn btn-primary" href="pages/register.html">Create Account</a>
-            <a class="btn btn-secondary" href="pages/login.html">Sign In</a>
+            <a class="btn btn-primary" href="pages/register.jsp">Create Account</a>
+            <a class="btn btn-secondary" href="pages/login.jsp">Sign In</a>
           </div>
 
           <div class="hero-stats">
@@ -692,8 +692,8 @@
             </p>
           </div>
           <div style="display:flex; gap:12px; flex-wrap:wrap;">
-            <a class="btn btn-primary" href="pages/register.html">Register</a>
-            <a class="btn btn-secondary" href="pages/login.html" style="background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.14);">Login</a>
+            <a class="btn btn-primary" href="pages/register.jsp">Register</a>
+            <a class="btn btn-secondary" href="pages/login.jsp" style="background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.14);">Login</a>
           </div>
         </div>
       </div>

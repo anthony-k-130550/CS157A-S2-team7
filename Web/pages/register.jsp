@@ -362,14 +362,14 @@
 <body>
   <nav class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="../index.html">
+      <a class="brand" href="../index.jsp">
         <div class="brand-badge">SS</div>
         <span>Study Session</span>
       </a>
 
       <div class="nav-actions">
-        <a class="btn btn-secondary" href="../index.html">Home</a>
-        <a class="btn btn-primary" href="login.html">Login</a>
+        <a class="btn btn-secondary" href="../index.jsp">Home</a>
+        <a class="btn btn-primary" href="login.jsp">Login</a>
       </div>
     </div>
   </nav>
@@ -456,13 +456,13 @@
 
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">Create Account</button>
-            <a class="btn btn-secondary" href="login.html">Already have an account?</a>
+            <a class="btn btn-secondary" href="login.jsp">Already have an account?</a>
           </div>
         </form>
 
         <div class="footer-link">
           Have an account already?
-          <a href="login.html">Go to login</a>
+          <a href="login.jsp">Go to login</a>
         </div>
       </section>
     </div>

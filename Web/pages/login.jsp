@@ -371,14 +371,14 @@
 <body>
   <nav class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="../index.html">
+      <a class="brand" href="../index.jsp">
         <div class="brand-badge">SS</div>
         <span>Study Session</span>
       </a>
 
       <div class="nav-actions">
-        <a class="btn btn-secondary" href="../index.html">Home</a>
-        <a class="btn btn-primary" href="register.html">Register</a>
+        <a class="btn btn-secondary" href="../index.jsp">Home</a>
+        <a class="btn btn-primary" href="register.jsp">Register</a>
       </div>
     </div>
   </nav>
@@ -448,7 +448,7 @@
 
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">Login</button>
-            <a class="btn btn-secondary" href="register.html">Create Account</a>
+            <a class="btn btn-secondary" href="register.jsp">Create Account</a>
           </div>
         </form>
 
@@ -459,7 +459,7 @@
 
         <div class="footer-link">
           Need an account first?
-          <a href="register.html">Go to registration</a>
+          <a href="register.jsp">Go to registration</a>
         </div>
       </section>
     </div>
