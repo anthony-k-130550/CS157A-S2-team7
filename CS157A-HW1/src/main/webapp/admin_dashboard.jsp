@@ -1,4 +1,5 @@
 <%@ page import="java.sql.*"%>
+<%@ include file="navbar.jsp" %>
 <html>
 <head>
   <title>Admin Dashboard(Filler)</title>

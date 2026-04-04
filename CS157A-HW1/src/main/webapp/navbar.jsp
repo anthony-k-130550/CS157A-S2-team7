@@ -18,8 +18,9 @@ String role = (String) session.getAttribute("role");
 
     <% if ("admin".equals(role)) { %>
         <a href="admin_dashboard.jsp" style="margin-right:15px;">Dashboard</a>
-        <a href="admin_add_buildings.jsp" style="margin-right:15px;">Add Room/Building</a>
-        <a href="delete_sessions.jsp" style="margin-right:15px;">Search Users</a>
+        <a href="admin_add_buildings.jsp" style="margin-right:15px;">Add Building</a>
+        <a href="admin_add_room.jsp" style="margin-right:15px;">Add Room</a>
+        <a href="search_user.jsp" style="margin-right:15px;">Search Users</a>
         
     <% } %>
 
