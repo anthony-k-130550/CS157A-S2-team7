@@ -12,6 +12,20 @@
 </head>
 <body>
 
+
+<script>
+function getReason(userID) {	
+  let input = prompt("Enter reason:");
+
+  if (input !== null && input.trim() !== "") {
+    window.location.href = "disable_intermediate.jsp?userID=" + userID + "&deleteReason=" + encodeURIComponent(input);
+  } else {
+    alert("Input required!");
+  }
+}
+</script>
+
+
 <form method="post">
 	<!-- Department -->
 	<label>UserID:</label>
@@ -80,7 +94,7 @@ try {
         out.println("<td>" + rs.getString("FullName") + "</td>");
         out.println("<td>" + rs.getString("Email") + "</td>");
         out.println("<td>" + rs.getString("Department") + "</td>");
-        out.println("<td><button onclick=\"getReason(" + rs.getInt(1) + "," + userID + ")\">Disable</button></td>");
+        out.println("<td><button onclick=\"getReason(" + rs.getInt("userID") + ")\">Disable</button></td>");
         out.println("</tr>");
     }
 	
