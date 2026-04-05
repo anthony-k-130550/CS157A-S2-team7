@@ -25,7 +25,7 @@
 	            ResultSet deleted = stmt.executeQuery(deletedQuery);
 	            
 	            if (!deleted.next()) { //safety check to see if the session has already been deleted
-	            	String delete = "INSERT INTO deletes (AdminUserID, SessionID, Reason) VALUES(" + 
+	            	String delete = "INSERT INTO deletes (DeletedByUserID, SessionID, Reason) VALUES(" + 
             				userID + ", " +
             				sessionID + ", '" +
             				deleteReason + "')";
@@ -41,7 +41,7 @@
 	            	out.println("<p>Session has already been deleted.</p>");
 	            }
 	            out.println("<p>Back to Search Sessions: </p>");
-            	out.println("<button onclick=\"window.location.href='search_sessions.jsp?'\">Back</button>");
+            	out.println("<button onclick=\"window.location.href='view_sessions.jsp?'\">Back</button>");
 	            stmt.close();
 	            con.close();
 	        } catch(SQLException e) {
