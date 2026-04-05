@@ -61,12 +61,12 @@ CREATE TABLE Disables (
 );
 
 CREATE TABLE Deletes (
-    AdminUserID INTEGER,
+    DeletedByUserID INTEGER,
     SessionID INTEGER,
     Reason VARCHAR(200),
     PRIMARY KEY (AdminUserID, SessionID),
     UNIQUE (SessionID),
-    FOREIGN KEY (AdminUserID) REFERENCES Admins(UserID),
+    FOREIGN KEY (DeletedByUserID) REFERENCES Users(UserID),
     FOREIGN KEY (SessionID) REFERENCES StudySession(SessionID)
 );
 

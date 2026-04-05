@@ -121,7 +121,7 @@ INSERT INTO Disables (AdminUserID, StudentUserID, Reason) VALUES
 (12, 9, 'Bad Behavior'),
 (12, 10, 'Bad Behavior');
 
-INSERT INTO Deletes (AdminUserID, SessionID, Reason) VALUES
+INSERT INTO Deletes (DeletedByUserID, SessionID, Reason) VALUES
 (15, 1, 'Violated Web Policy'),
 (15, 2, 'Violated Web Policy'),
 (15, 3, 'Violated Web Policy'),
