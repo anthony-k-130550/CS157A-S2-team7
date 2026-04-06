@@ -78,11 +78,37 @@ user = "root";
 String password = "CS175ALG";
 java.sql.Connection con = null;
 
+StringBuilder query = new StringBuilder(
+	    "SELECT u.* FROM users u JOIN students s ON s.UserID = u.UserID WHERE 1=1"
+	);
+
+	// userID
+	if (userID != null && !userID.isBlank()) {
+	    query.append(" AND u.UserID = '" + userID + "'");
+	}
+
+	// name
+	if (name != null && !name.isBlank()) {
+	    query.append(" AND u.FullName LIKE '%" + name + "%'");
+	}
+
+	// email
+	if (email != null && !email.isBlank()) {
+	    query.append(" AND u.Email LIKE '%" + email + "%'");
+	}
+
+	// department
+	if (department != null && !department.isBlank()) {
+	    query.append(" AND u.Department LIKE '%" + department + "%'");
+	}
+
+
+
 try {
     Class.forName("com.mysql.cj.jdbc.Driver");
     con = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?autoReconnect=true&useSSL=false", user, password);
 
-    String sql = "SELECT u.* FROM users u JOIN students s ON s.UserID = u.UserID";
+    String sql = query.toString();
     
     PreparedStatement ps = con.prepareStatement(sql);
 	
