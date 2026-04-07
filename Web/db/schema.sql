@@ -64,7 +64,7 @@ CREATE TABLE Deletes (
     DeletedByUserID INTEGER,
     SessionID INTEGER,
     Reason VARCHAR(200),
-    PRIMARY KEY (AdminUserID, SessionID),
+    PRIMARY KEY (DeletedByUserID, SessionID),
     UNIQUE (SessionID),
     FOREIGN KEY (DeletedByUserID) REFERENCES Users(UserID),
     FOREIGN KEY (SessionID) REFERENCES StudySession(SessionID)
