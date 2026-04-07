@@ -75,7 +75,7 @@ String department = request.getParameter("Department");
 String db = "project";
 String user;
 user = "root";
-String password = "CS175ALG";
+String password = "CS157ALG";
 java.sql.Connection con = null;
 
 StringBuilder query = new StringBuilder(
@@ -105,7 +105,7 @@ StringBuilder query = new StringBuilder(
 
 
 try {
-    Class.forName("com.mysql.cj.jdbc.Driver");
+    Class.forName("com.mysql.jdbc.Driver");
     con = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?autoReconnect=true&useSSL=false", user, password);
 
     String sql = query.toString();

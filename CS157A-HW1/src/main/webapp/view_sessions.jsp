@@ -46,11 +46,11 @@ function getReason(sessionID, userID) {
 	String db = "project";
     String user;
     user = "root";
-    String password = "CS175ALG";
+    String password = "CS157ALG";
     java.sql.Connection con = null;
 
     try {
-        Class.forName("com.mysql.cj.jdbc.Driver");
+        Class.forName("com.mysql.jdbc.Driver");
         con = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?autoReconnect=true&useSSL=false", user, password);
 		
         Integer userID = (Integer) session.getAttribute("userID");

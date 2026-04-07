@@ -22,7 +22,7 @@
      //String db = "project";
      String user; // assumes database name is the same as username
      user = "root";
-     String databasePassword = "CS175ALG";
+     String databasePassword = "CS157ALG";
      
      String email = request.getParameter("email");
      String password = request.getParameter("password");
@@ -32,9 +32,8 @@
     	        Connection con;
     	        Class.forName("com.mysql.jdbc.Driver");
 
-    	        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?autoReconnect=true&useSSL=false",user, databasePassword);
+    	        con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/project?autoReconnect=true&useSSL=false", user, databasePassword);
 				
-    	        
     	        Statement stmt = con.createStatement();
 
     	        String query = "SELECT * FROM users WHERE Email = '" 
@@ -67,7 +66,11 @@
     	        stmt.close();
     	        con.close();
     	      } catch (SQLException e) {
-    	        out.println("SQLException caught: " + e.getMessage());
+    	    	  /* e.printStackTrace();
+    	        out.println("SQLException caught: " + e.getMessage()); */
+    	    	  out.println("<pre>");
+    	    	    e.printStackTrace(new java.io.PrintWriter(out, true));
+    	    	    out.println("</pre>");
     	      }
      }
     %>

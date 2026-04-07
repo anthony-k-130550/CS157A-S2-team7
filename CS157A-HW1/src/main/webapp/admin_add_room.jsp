@@ -27,7 +27,7 @@
 			String db = "project";
 		    String user;
 		    user = "root";
-		    String password = "CS157A";
+		    String password = "CS157ALG";
 		    try {
 		        java.sql.Connection con;
 		        Class.forName("com.mysql.jdbc.Driver");

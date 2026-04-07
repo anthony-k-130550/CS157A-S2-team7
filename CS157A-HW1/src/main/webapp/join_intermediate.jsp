@@ -11,7 +11,7 @@
 			String db = "project";
 	        String user;
 	        user = "root";
-	        String password = "CS175ALG";
+	        String password = "CS157ALG";
 	        
 	        try {
 	            java.sql.Connection con;

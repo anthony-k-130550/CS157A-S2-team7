@@ -25,7 +25,7 @@
      String db = "project";
      String user; // assumes database name is the same as username
      user = "root";
-     String databasePassword = "CS175ALG";
+     String databasePassword = "CS157ALG";
      
      String fullname = request.getParameter("fullname");
      String email;
