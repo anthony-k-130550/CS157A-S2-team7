@@ -2,74 +2,96 @@
     pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="java.sql.ResultSet" %>
-<%@ include file="navbar.jsp" %>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Create Study Session</title>
+<link rel="stylesheet" href="css/global.css">
 </head>
 
 <body>
-<h1>Create Study Sessions</h1>
 
-<form method="post">
-	<!-- Department -->
-	<label>Title:</label>
-	<input type="text" name="title" required><br><br>
-	
-	<!-- Start Time -->
-	<label>Start Time:</label>
-	<input type="time" name="startTime"  min="08:00" max="22:00" required><br><br>
-	
-	<!-- End Time -->
-	<label>End Time:</label>
-	<input type="time" name="endTime"  min="08:00" max="22:00" required><br><br>
-	
-	<!-- Day -->
-	<label>Day:</label>
-	<input type="date" name="day" required><br><br>
-	
-	<!-- Capacity  -->	
-	<label>Capacity:</label>
-	<input type="number" name="capacity" min="1" max ="30" required><br><br>
-	
-	<label>Room:</label>
-	<input type="number" name="room" required><br><br>
-	
-	<label>Building: </label>
-	<input type="text" name="building" required><br><br>
-	
-	<label>Course: </label>
-	<input type="text" name="course" required><br><br>
-	
-	<!-- Description -->
-	<label>Description: </label>
-	<input type="text" name="description"><br><br>
-	
-	
-	<button type="submit">Create Session</button>
+<%@ include file="navbar.jsp" %>
 
-</form>
+<div class="page-shell">
+  <div class="container">
+    <div class="card" style="margin-bottom: 24px;">
+      <h1 class="form-title" style="margin-bottom: 8px;">Create Study Session</h1>
+      <p class="form-subtitle" style="margin-bottom: 0;">
+        Set up a new study session by choosing the time, location, course, and session details.
+      </p>
+    </div>
+
+    <div class="card">
+      <form method="post">
+        <div class="grid grid-2">
+          <div class="field">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" required>
+          </div>
+
+          <div class="field">
+            <label for="capacity">Capacity</label>
+            <input type="number" id="capacity" name="capacity" min="1" max="30" required>
+          </div>
+
+          <div class="field">
+            <label for="startTime">Start Time</label>
+            <input type="time" id="startTime" name="startTime" min="08:00" max="22:00" required>
+          </div>
+
+          <div class="field">
+            <label for="endTime">End Time</label>
+            <input type="time" id="endTime" name="endTime" min="08:00" max="22:00" required>
+          </div>
+
+          <div class="field">
+            <label for="day">Day</label>
+            <input type="date" id="day" name="day" required>
+          </div>
+
+          <div class="field">
+            <label for="course">Course</label>
+            <input type="text" id="course" name="course" required>
+          </div>
+
+          <div class="field">
+            <label for="building">Building</label>
+            <input type="text" id="building" name="building" required>
+          </div>
+
+          <div class="field">
+            <label for="room">Room</label>
+            <input type="number" id="room" name="room" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="description">Description</label>
+          <input type="text" id="description" name="description">
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Create Session</button>
+        </div>
+      </form>
 
 <%
-
 if ("POST".equalsIgnoreCase(request.getMethod())) {
-    // do insert here
 
-	String title = request.getParameter("title");
-	String startTime = request.getParameter("startTime");
-	String endTime = request.getParameter("endTime");
-	String day = request.getParameter("day");
-	int capacity = Integer.parseInt(request.getParameter("capacity"));
-	int room = Integer.parseInt(request.getParameter("room"));
-	String building = request.getParameter("building");
-	String course = request.getParameter("course");
-	String description = request.getParameter("description");
-	
-	
-	String db = "project";
+    String title = request.getParameter("title");
+    String startTime = request.getParameter("startTime");
+    String endTime = request.getParameter("endTime");
+    String day = request.getParameter("day");
+    int capacity = Integer.parseInt(request.getParameter("capacity"));
+    int room = Integer.parseInt(request.getParameter("room"));
+    String building = request.getParameter("building");
+    String course = request.getParameter("course");
+    String description = request.getParameter("description");
+
+    String db = "project";
     String user;
     user = "root";
     String password = "CS157ALG";
@@ -78,45 +100,40 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
     try {
         Class.forName("com.mysql.jdbc.Driver");
         con = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?autoReconnect=true&useSSL=false", user, password);
-        
+
         int userID = (Integer) session.getAttribute("userID");
-        
+
         String disableQuery = "SELECT * FROM disables WHERE StudentUserID=" + userID;
         Statement disableStmt = con.createStatement();
         ResultSet disableRS = disableStmt.executeQuery(disableQuery);
-        
+
         if (!disableRS.next()) {
-        	String sql = "SELECT 1 FROM room WHERE RoomID = ? AND BuildingName = ? LIMIT 1";
+            String sql = "SELECT 1 FROM room WHERE RoomID = ? AND BuildingName = ? LIMIT 1";
             String sql2 = "SELECT 1 FROM course WHERE CourseName = ? LIMIT 1";
-            
+
             PreparedStatement ps = con.prepareStatement(sql);
             PreparedStatement ps2 = con.prepareStatement(sql2);
 
-            
             ps.setInt(1, room);
             ps.setString(2, building);
             ps2.setString(1, course);
-            
+
             ResultSet rs = ps.executeQuery();
             ResultSet rs2 = ps2.executeQuery();
-            
+
             boolean roomExist = rs.next();
             boolean courseExist = rs2.next();
-            
+
             if (rs != null) rs.close();
             if (ps != null) ps.close();
             if (rs2 != null) rs2.close();
             if (ps2 != null) ps2.close();
-            
-            if(roomExist && courseExist){
-            	
-            	// 4. SQL INSERT (NO SessionID because AUTO_INCREMENT)
+
+            if (roomExist && courseExist) {
+
                 sql = "INSERT INTO StudySession (Title, StartTime, EndTime, Day, Capacity, Description) VALUES (?, ?, ?, ?, ?, ?)";
-        		
-                // 5. Create PreparedStatement
                 ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-                // 6. Set values (ORDER MATTERS)
                 ps.setString(1, title);
                 ps.setString(2, startTime);
                 ps.setString(3, endTime);
@@ -124,9 +141,8 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
                 ps.setInt(5, capacity);
                 ps.setString(6, description);
 
-                // 7. Execute
                 int rows = ps.executeUpdate();
-                
+
                 rs = ps.getGeneratedKeys();
 
                 int sessionId = -1;
@@ -134,128 +150,108 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
                 if (rs.next()) {
                     sessionId = rs.getInt(1);
                 }
-                
-             
+
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                
-                
-                // 8. Check result
+
                 if (rows > 0) {
-                    out.println("<p style='color:green;'>Session inserted successfully!</p>");
+                    out.println("<div style='margin-top:18px; padding:12px 14px; border-radius:14px; background:#f4f8f6; color:#0f766e; border:1px solid rgba(15,118,110,0.18);'>Session inserted successfully.</div>");
                 } else {
-                    out.println("<p style='color:red;'>Insert failed.</p>");
+                    out.println("<div style='margin-top:18px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Insert failed.</div>");
                 }
-        	
-                //Get the course ID
+
                 sql = "SELECT CourseID FROM course WHERE CourseName = ?";
-                
                 ps = con.prepareStatement(sql);
                 ps.setString(1, course);
-               	rs = ps.executeQuery();
-               	
-               	int courseID = -1; 
-               	
-               	if(rs.next()){
-               		courseID = rs.getInt("CourseID");
-               	}
-               	
-               	if (rs != null) rs.close();
-               	if (ps != null) ps.close();
-                
-                //Updat StydinFor Table 
-                
-                
-                
+                rs = ps.executeQuery();
+
+                int courseID = -1;
+
+                if (rs.next()) {
+                    courseID = rs.getInt("CourseID");
+                }
+
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+
                 sql = "INSERT INTO studyingfor (SessionID, CourseID) VALUES (?, ?)";
                 ps = con.prepareStatement(sql);
                 ps.setInt(1, sessionId);
                 ps.setInt(2, courseID);
                 rows = ps.executeUpdate();
-                
+
                 if (rows > 0) {
-                    out.println("<p style='color:green;'>stuyingfor upadted</p>");
+                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#f4f8f6; color:#0f766e; border:1px solid rgba(15,118,110,0.18);'>Course link added successfully.</div>");
                 } else {
-                    out.println("<p style='color:red;'> failed stuyingfor.</p>");
+                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Failed to update studyingfor.</div>");
                 }
-                
-            
+
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                
-                //Upddate TakePlaceInt
-                
+
                 sql = "INSERT INTO takesplacein (RoomID, BuildingName, SessionID) VALUES (?, ?, ?)";
                 ps = con.prepareStatement(sql);
                 ps.setInt(1, room);
                 ps.setString(2, building);
                 ps.setInt(3, sessionId);
-                
+
                 rows = ps.executeUpdate();
-                
+
                 if (rows > 0) {
-                    out.println("<p style='color:green;'>takesplacein upadted</p>");
+                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#f4f8f6; color:#0f766e; border:1px solid rgba(15,118,110,0.18);'>Location added successfully.</div>");
                 } else {
-                    out.println("<p style='color:red;'> failed takesplacein.</p>");
+                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Failed to update takesplacein.</div>");
                 }
-                
-          
+
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                
-                
-                //Update the crates tables
+
                 sql = "INSERT INTO creates (StudentUserID, SessionID, SuccessStatus) VALUES (?, ?, ?)";
                 ps = con.prepareStatement(sql);
                 ps.setInt(1, userID);
-                ps.setInt(2,sessionId);
+                ps.setInt(2, sessionId);
                 ps.setString(3, "successfully created");
-                
-    			rows = ps.executeUpdate();
-                
+
+                rows = ps.executeUpdate();
+
                 if (rows > 0) {
-                    out.println("<p style='color:green;'>Creates table upadted</p>");
+                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#f4f8f6; color:#0f766e; border:1px solid rgba(15,118,110,0.18);'>Creator record saved successfully.</div>");
                 } else {
-                    out.println("<p style='color:red;'> failed to update Creates table.</p>");
+                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Failed to update creates table.</div>");
                 }
-                
-                	
+
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                //after submitting redirecting to view sessions for now
-                response.sendRedirect("view_sessions.jsp");
-               
-               
-            }
-            else if(!roomExist || !courseExist){
-            	if(!roomExist){
-            		 out.println("<p style='color:red;'>Entered Room/Buidling does not exist.</p>");
-            	}
-            	if(!courseExist){
-           		 out.println("<p style='color:red;'>Entered Course does not exist.</p>");
-           		}
-                out.println("<p style='color:red;'>Insert failed.</p>");
 
-           }
+                response.sendRedirect("view_sessions.jsp");
+
+            } else if (!roomExist || !courseExist) {
+                if (!roomExist) {
+                    out.println("<div style='margin-top:18px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Entered room and building do not exist.</div>");
+                }
+                if (!courseExist) {
+                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Entered course does not exist.</div>");
+                }
+                out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Insert failed.</div>");
+            }
         } else {
-            out.println("<p>Your account has been disabled. Please contact an administrator</p>");
+            out.println("<div style='margin-top:18px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Your account has been disabled. Please contact an administrator.</div>");
         }
 
-        
-     
-
-    } catch(SQLException
-    		e) {
-    	out.println("SQLException caught: " + e.getMessage());
-    	e.printStackTrace();
-    }  finally {
+    } catch(SQLException e) {
+        out.println("<div style='margin-top:18px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>SQLException caught: " + e.getMessage() + "</div>");
+        e.printStackTrace();
+    } finally {
         if (con != null) {
             try { con.close(); } catch (Exception e) {}
         }
     }
-	
 }
 %>
+
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

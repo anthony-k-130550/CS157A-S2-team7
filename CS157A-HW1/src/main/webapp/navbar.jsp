@@ -2,26 +2,33 @@
 String role = (String) session.getAttribute("role");
 %>
 
-<div>
-	 <a href="userhome.jsp" style="margin-right:15px;">Home</a>
-	
+<nav class="nav-shell">
+  <div class="container nav-inner">
+    <a class="brand" href="userhome.jsp">
+      <div class="brand-badge">SS</div>
+      <span>Study Session</span>
+    </a>
 
-	<% if (role == null) { %>
-	  	<a href="login.jsp" style="margin-right:15px;">Log In</a>
-        <a href="register.jsp" style="margin-right:15px;">Register</a>
-	<% } %>
-    <% if ("student".equals(role) ||"admin".equals(role)) { %>
-       <a href="create_session.jsp" style="margin-right:15px;">Create Session</a>
-       <a href="search_sessions.jsp" style="margin-right:15px;">Search Session</a>
-       <a href="view_sessions.jsp" style="margin-right:15px;">My Sessions</a>
-    <% } %>
+    <div class="nav-links">
+      <a class="nav-link" href="userhome.jsp">Home</a>
 
-    <% if ("admin".equals(role)) { %>
-        <a href="admin_dashboard.jsp" style="margin-right:15px;">Dashboard</a>
-        <a href="admin_add_buildings.jsp" style="margin-right:15px;">Add Building</a>
-        <a href="admin_add_room.jsp" style="margin-right:15px;">Add Room</a>
-        <a href="search_user.jsp" style="margin-right:15px;">Search Users</a>
-        
-    <% } %>
+      <% if (role == null) { %>
+        <a class="nav-link" href="login.jsp">Log In</a>
+        <a class="nav-link nav-link-primary" href="register.jsp">Register</a>
+      <% } %>
 
-</div>
+      <% if ("student".equals(role) || "admin".equals(role)) { %>
+        <a class="nav-link" href="create_session.jsp">Create Session</a>
+        <a class="nav-link" href="search_sessions.jsp">Search Session</a>
+        <a class="nav-link" href="view_sessions.jsp">My Sessions</a>
+      <% } %>
+
+      <% if ("admin".equals(role)) { %>
+        <a class="nav-link" href="admin_dashboard.jsp">Dashboard</a>
+        <a class="nav-link" href="admin_add_buildings.jsp">Add Building</a>
+        <a class="nav-link" href="admin_add_room.jsp">Add Room</a>
+        <a class="nav-link" href="search_user.jsp">Search Users</a>
+      <% } %>
+    </div>
+  </div>
+</nav>
