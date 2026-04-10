@@ -38,7 +38,7 @@
 	            	deleteStmt.close();
 	            } else {
 	            	con.rollback();
-	            	out.println("<p>Session has already been deleted.</p>");
+	            	out.println("<p>User has already been deleted.</p>");
 	            }
 	            out.println("<p>Back to User Search: </p>");
             	out.println("<button onclick=\"window.location.href='search_user.jsp?'\">Back</button>");

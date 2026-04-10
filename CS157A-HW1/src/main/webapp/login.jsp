@@ -39,6 +39,7 @@
     	        String query = "SELECT * FROM users WHERE Email = '" 
     	            + email + "' AND Password = '" 
     	            + password + "'";
+    	        
 
     	        ResultSet rs = stmt.executeQuery(query);
 
@@ -46,31 +47,37 @@
     	          //response.sendRedirect("home.jsp");	
     	          int userID = rs.getInt(1); //get the userID to see if admin or normal user
     	          String redirectQuery = "SELECT 1 FROM admins WHERE userID = '" + userID + "'";
-    				
-    	          session.setAttribute("userID", userID);
-    	          //if the userID is in the admin table, then go to admin dashboard
-    	          //otherwise, go to the normal user/student dashboard
-    	          ResultSet redirectResult = stmt.executeQuery(redirectQuery);
-    	          if (redirectResult.next()){
-    	        	  session.setAttribute("role", "admin");
-        	          response.sendRedirect("admin_dashboard.jsp");	
-    	          } else {
-    	        	  session.setAttribute("role", "student");	
-    	        	  response.sendRedirect("userhome.jsp");
-    	          }
-    	        } else {
-    	          out.println("<p style='color:red;'>Invalid email or password.</p>");
-    	        }
+  	            	
+    	          String disableQuery = "SELECT * FROM disables WHERE StudentUserID=" + userID;
+    	          Statement disableStmt = con.createStatement();
+    	          ResultSet disableRS = disableStmt.executeQuery(disableQuery);
 
+    	          if (!disableRS.next()) {
+    	        	  session.setAttribute("userID", userID);
+        	          //if the userID is in the admin table, then go to admin dashboard
+        	          //otherwise, go to the normal user/student dashboard
+        	          ResultSet redirectResult = stmt.executeQuery(redirectQuery);
+        	          if (redirectResult.next()){
+        	        	  session.setAttribute("role", "admin");
+            	          response.sendRedirect("admin_dashboard.jsp");	
+        	          } else {
+        	        	  session.setAttribute("role", "student");	
+        	        	  response.sendRedirect("userhome.jsp");
+        	          }
+        	        } else {
+  		              out.println("<p>Your account has been disabled. Please contact an administrator</p>");
+      	          	}
+    	          	disableRS.close();
+    	          	disableStmt.close();
+    	          } else {
+    	        	  out.println("<p>Invalid email or password");
+    	          }
+    	   
     	        rs.close();
     	        stmt.close();
     	        con.close();
     	      } catch (SQLException e) {
-    	    	  /* e.printStackTrace();
-    	        out.println("SQLException caught: " + e.getMessage()); */
-    	    	  out.println("<pre>");
-    	    	    e.printStackTrace(new java.io.PrintWriter(out, true));
-    	    	    out.println("</pre>");
+    	        out.println("SQLException caught: " + e.getMessage());
     	      }
      }
     %>
