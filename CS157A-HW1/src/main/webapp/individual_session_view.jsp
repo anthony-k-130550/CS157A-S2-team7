@@ -39,8 +39,13 @@
 
           Statement stmt = con.createStatement();
           ResultSet rs = stmt.executeQuery(query);
+          
+          String roomQuery = "SELECT BuildingName, RoomID FROM takesplacein WHERE SessionID = " + sessionID;
+          Statement roomStmt = con.createStatement();
+          ResultSet roomRs = roomStmt.executeQuery(roomQuery);
 
           if (rs.next()) {
+        	roomRs.next(); //move the pointer to the first entry (should be the only entry)
             out.println("<h1 class='form-title' style='margin-bottom: 10px;'>" + rs.getString(2) + "</h1>");
             out.println("<p class='form-subtitle' style='margin-bottom: 18px;'>Review the session details below.</p>");
 
@@ -51,6 +56,9 @@
             out.println("<div><strong>Start Time</strong><p class='muted' style='margin:6px 0 0;'>" + rs.getTime(3) + "</p></div>");
             out.println("<div><strong>End Time</strong><p class='muted' style='margin:6px 0 0;'>" + rs.getTime(4) + "</p></div>");
             out.println("<div><strong>Capacity</strong><p class='muted' style='margin:6px 0 0;'>" + rs.getInt(6) + "</p></div>");
+            out.println("<div><p class='muted' style='margin:6px 0 0;'></p></div>");
+            out.println("<div><strong>Building</strong><p class='muted' style='margin:6px 0 0;'>" + roomRs.getString(1) + "</p></div>");
+            out.println("<div><strong>Room</strong><p class='muted' style='margin:6px 0 0;'>" + roomRs.getInt(2) + "</p></div>");
             out.println("</div>");
             out.println("</div>");
 
