@@ -23,7 +23,7 @@ CREATE TABLE Admins (
 );
 
 CREATE TABLE Course (
-    CourseID INTEGER PRIMARY KEY,
+    CourseID INTEGER AUTO_INCREMENT PRIMARY KEY,
     Department VARCHAR(50),
     CourseNumber INTEGER,
     CourseName VARCHAR(100)
