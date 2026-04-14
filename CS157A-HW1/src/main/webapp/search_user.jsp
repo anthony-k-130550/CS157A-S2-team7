@@ -1,4 +1,4 @@
-s<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*"%>
 
@@ -22,6 +22,10 @@ function getReason(userID) {
   } else {
     alert("Input required!");
   }
+}
+
+function enableUser(userID) {
+  window.location.href = "enable_intermediate.jsp?userID=" + userID;
 }
 </script>
 
@@ -73,7 +77,7 @@ function getReason(userID) {
               <th>Name</th>
               <th>Email</th>
               <th>Department</th>
-              <th>Disable</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -84,65 +88,97 @@ String name = request.getParameter("name");
 String email = request.getParameter("email");
 String department = request.getParameter("Department");
 
-String db = "project";
-String user;
-user = "root";
+String user = "root";
 String password = "CS157ALG";
-java.sql.Connection con = null;
+Connection con = null;
+PreparedStatement ps = null;
+ResultSet rs = null;
 
 StringBuilder query = new StringBuilder(
-    "SELECT u.* FROM users u JOIN students s ON s.UserID = u.UserID WHERE 1=1"
+    "SELECT u.*, " +
+    "EXISTS (SELECT 1 FROM disables d WHERE d.StudentUserID = u.UserID) AS isDisabled " +
+    "FROM users u " +
+    "JOIN students s ON s.UserID = u.UserID " +
+    "WHERE 1=1"
 );
 
-// userID
 if (userID != null && !userID.isBlank()) {
-    query.append(" AND u.UserID = '" + userID + "'");
+    query.append(" AND u.UserID = ?");
 }
 
-// name
 if (name != null && !name.isBlank()) {
-    query.append(" AND u.FullName LIKE '%" + name + "%'");
+    query.append(" AND u.FullName LIKE ?");
 }
 
-// email
 if (email != null && !email.isBlank()) {
-    query.append(" AND u.Email LIKE '%" + email + "%'");
+    query.append(" AND u.Email LIKE ?");
 }
 
-// department
 if (department != null && !department.isBlank()) {
-    query.append(" AND u.Department LIKE '%" + department + "%'");
+    query.append(" AND u.Department LIKE ?");
 }
 
 try {
-    Class.forName("com.mysql.jdbc.Driver");
+    Class.forName("com.mysql.cj.jdbc.Driver");
     con = DriverManager.getConnection(
         "jdbc:mysql://localhost:3306/project?autoReconnect=true&useSSL=false",
         user,
         password
     );
 
-    String sql = query.toString();
-    PreparedStatement ps = con.prepareStatement(sql);
-    ResultSet rs = ps.executeQuery();
+    ps = con.prepareStatement(query.toString());
+
+    int paramIndex = 1;
+
+    if (userID != null && !userID.isBlank()) {
+        ps.setInt(paramIndex++, Integer.parseInt(userID));
+    }
+
+    if (name != null && !name.isBlank()) {
+        ps.setString(paramIndex++, "%" + name + "%");
+    }
+
+    if (email != null && !email.isBlank()) {
+        ps.setString(paramIndex++, "%" + email + "%");
+    }
+
+    if (department != null && !department.isBlank()) {
+        ps.setString(paramIndex++, "%" + department + "%");
+    }
+
+    rs = ps.executeQuery();
 
     while (rs.next()) {
+        boolean isDisabled = rs.getBoolean("isDisabled");
+        String action;
+
+        if (isDisabled) {
+            action = "<button type='button' class='btn btn-success' onclick=\"enableUser(" + rs.getInt("UserID") + ")\">Enable</button>";
+        } else {
+            action = "<button type='button' class='btn btn-danger' onclick=\"getReason(" + rs.getInt("UserID") + ")\">Disable</button>";
+        }
+
         out.println("<tr>");
-        out.println("<td>" + rs.getInt("userID") + "</td>");
+        out.println("<td>" + rs.getInt("UserID") + "</td>");
         out.println("<td>" + rs.getString("FullName") + "</td>");
         out.println("<td>" + rs.getString("Email") + "</td>");
         out.println("<td>" + rs.getString("Department") + "</td>");
-        out.println("<td><button type='button' class='btn btn-danger' onclick=\"getReason(" + rs.getInt("userID") + ")\">Disable</button></td>");
+        out.println("<td>" + action + "</td>");
         out.println("</tr>");
     }
-
-    if (rs != null) rs.close();
-    if (ps != null) ps.close();
 
 } catch(SQLException e) {
     out.println("<tr><td colspan='5'><div style='padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>SQLException caught: " + e.getMessage() + "</div></td></tr>");
     e.printStackTrace();
+} catch(ClassNotFoundException e) {
+    out.println("<tr><td colspan='5'><div style='padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Driver error: " + e.getMessage() + "</div></td></tr>");
 } finally {
+    if (rs != null) {
+        try { rs.close(); } catch (Exception e) {}
+    }
+    if (ps != null) {
+        try { ps.close(); } catch (Exception e) {}
+    }
     if (con != null) {
         try { con.close(); } catch (Exception e) {}
     }
