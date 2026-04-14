@@ -27,6 +27,7 @@ String role = (String) session.getAttribute("role");
         <a class="nav-link" href="admin_dashboard.jsp">Dashboard</a>
         <a class="nav-link" href="admin_add_buildings.jsp">Add Building</a>
         <a class="nav-link" href="admin_add_room.jsp">Add Room</a>
+        <a class="nav-link" href="admin_add_course.jsp">Add Course</a>
         <a class="nav-link" href="search_user.jsp">Search Users</a>
       <% } %>
     </div>
