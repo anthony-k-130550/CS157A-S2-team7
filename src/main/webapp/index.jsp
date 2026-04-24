@@ -31,12 +31,11 @@
     <section class="hero">
       <div class="container hero-grid">
         <div>
-          <div class="eyebrow">Code Review Milestone: Main webpage + 2 functional requirements</div>
-          <h1>Register, log in, and start building your study session experience.</h1>
+          <div class="eyebrow">Connect. Organize. Study better.</div>
+          <h1>Find and create study sessions with classmates in one place.</h1>
           <p>
-            Study Session helps students organize campus study groups in one place. For this milestone,
-            the project includes the main landing page plus two implemented functional requirements:
-            <strong>Account Registration</strong> and <strong>Account Login</strong>.
+            Study Session helps students connect with peers taking the same courses,
+            create study groups, and join sessions based on subject, course, and location.
           </p>
 
           <div class="hero-actions">
@@ -46,16 +45,16 @@
 
           <div class="hero-stats">
             <div class="stat">
-              <strong>FR1</strong>
-              <span>Account registration with full name, email, password, and department.</span>
+              <strong>Students</strong>
+              <span>Create accounts and join sessions that match their courses.</span>
             </div>
             <div class="stat">
-              <strong>FR2</strong>
-              <span>Account login using email and password validation.</span>
+              <strong>Sessions</strong>
+              <span>Search, create, and manage study sessions.</span>
             </div>
             <div class="stat">
-              <strong>Schema</strong>
-              <span>Designed around Users, Students, and Admins tables.</span>
+              <strong>Admins</strong>
+              <span>Manage users, locations, and system data.</span>
             </div>
           </div>
         </div>
@@ -63,29 +62,29 @@
         <div class="hero-card">
           <div class="card-header">
             <div>
-              <strong style="font-size: 20px; letter-spacing: -0.02em;">Milestone Preview</strong>
-              <div style="color: var(--muted); margin-top: 6px; font-size: 14px;">Connected to registration and login pages</div>
+              <strong style="font-size: 20px;">Platform Overview</strong>
+              <div style="color: var(--muted); margin-top: 6px; font-size: 14px;">
+                Designed for student collaboration
+              </div>
             </div>
-            <span class="pill">Ready to Review</span>
+            <span class="pill">Live</span>
           </div>
 
           <div class="session-card">
             <div class="session-top">
-              <div>
-                <div class="session-title">Current Code Review Scope</div>
-              </div>
-              <span class="pill" style="background:#eefcf5; color:#0f766e;">2 FRs</span>
+              <div class="session-title">Core actions</div>
+              <span class="pill" style="background:#eefcf5; color:#0f766e;">Active</span>
             </div>
 
             <div class="session-meta">
-              <div><strong>Requirement 1</strong><br />Register a new user</div>
-              <div><strong>Requirement 2</strong><br />Log in as existing user</div>
-              <div><strong>User Roles</strong><br />Student and Admin</div>
-              <div><strong>Database Fit</strong><br />Users / Students / Admins</div>
+              <div><strong>Create</strong><br />Start sessions</div>
+              <div><strong>Search</strong><br />Find sessions</div>
+              <div><strong>Join</strong><br />Collaborate</div>
+              <div><strong>Manage</strong><br />Track activity</div>
             </div>
 
             <div class="session-note">
-              This submission focuses on account access features that connect directly to the project database design.
+              A simple system for organizing and joining study groups.
             </div>
           </div>
         </div>
@@ -96,10 +95,9 @@
       <div class="container">
         <div class="section-heading">
           <div>
-            <h2>Included in this submission</h2>
+            <h2>Features</h2>
             <p>
-              This landing page supports the first project code review by clearly showing the main entry point of the system
-              and the two completed functional requirements for user access.
+              Everything needed to organize and manage study sessions in one place.
             </p>
           </div>
         </div>
@@ -107,20 +105,20 @@
         <div class="cards">
           <article class="feature-card">
             <div class="icon">1</div>
-            <h3>Account Registration</h3>
-            <p>New users can create an account by entering full name, email, password, department, and selecting a user role.</p>
+            <h3>Account Access</h3>
+            <p>Create an account and securely log in to access the platform.</p>
           </article>
 
           <article class="feature-card">
             <div class="icon">2</div>
-            <h3>Account Login</h3>
-            <p>Existing users can log in with email and password and receive feedback if credentials are invalid.</p>
+            <h3>Session Management</h3>
+            <p>Create sessions, search by filters, and join study groups.</p>
           </article>
 
           <article class="feature-card">
             <div class="icon">3</div>
-            <h3>Database Alignment</h3>
-            <p>The current account flow is designed to match the project schema for Users, Students, and Admins.</p>
+            <h3>Admin Controls</h3>
+            <p>Manage users, buildings, rooms, and system structure.</p>
           </article>
         </div>
       </div>
@@ -129,76 +127,76 @@
     <section class="section" id="how-it-works">
       <div class="container two-col">
         <div class="panel">
-          <div class="section-heading" style="margin-bottom: 8px; display:block;">
-            <h2 style="font-size: 28px;">How it works</h2>
-            <p>The current milestone demonstrates the user account flow.</p>
-          </div>
+          <h2 style="font-size: 28px;">How it works</h2>
 
           <div class="list">
             <div class="list-item">
               <div class="list-number">1</div>
               <div>
-                <strong>Open the registration page</strong>
-                <span>Users can create an account from the landing page by choosing Register.</span>
+                <strong>Create an account</strong>
+                <span>Register to access the platform.</span>
               </div>
             </div>
+
             <div class="list-item">
               <div class="list-number">2</div>
               <div>
-                <strong>Enter account details</strong>
-                <span>Registration collects full name, email, password, department, and role for the new account.</span>
+                <strong>Log in</strong>
+                <span>Access your dashboard.</span>
               </div>
             </div>
+
             <div class="list-item">
               <div class="list-number">3</div>
               <div>
-                <strong>Prevent duplicate emails</strong>
-                <span>The registration logic checks whether the email is already in use before creating the account.</span>
+                <strong>Search or create sessions</strong>
+                <span>Find or start study groups.</span>
               </div>
             </div>
+
             <div class="list-item">
               <div class="list-number">4</div>
               <div>
-                <strong>Log in with saved credentials</strong>
-                <span>Users can then go to the login page and sign in using the same email and password.</span>
+                <strong>Join and collaborate</strong>
+                <span>Study with others in your courses.</span>
               </div>
             </div>
           </div>
         </div>
 
         <div class="panel" id="roles">
-          <div class="section-heading" style="margin-bottom: 8px; display:block;">
-            <h2 style="font-size: 28px;">User roles and tables</h2>
-            <p>The account pages are built around the entities described in the report.</p>
-          </div>
+          <h2 style="font-size: 28px;">User roles</h2>
 
           <div class="list">
-            <div class="list-item">
-              <div class="list-number">U</div>
-              <div>
-                <strong>Users</strong>
-                <span>Stores the shared account fields: full name, email, password, and department.</span>
-              </div>
-            </div>
             <div class="list-item">
               <div class="list-number">S</div>
               <div>
                 <strong>Students</strong>
-                <span>Represents student accounts and connects student-specific information to the main user record.</span>
+                <span>Create and join sessions.</span>
               </div>
             </div>
+
             <div class="list-item">
               <div class="list-number">A</div>
               <div>
                 <strong>Admins</strong>
-                <span>Represents admin accounts and supports the separate admin role defined in the database design.</span>
+                <span>Manage users and system data.</span>
               </div>
             </div>
+
             <div class="list-item">
-              <div class="list-number">DB</div>
+              <div class="list-number">C</div>
               <div>
-                <strong>Database setup</strong>
-                <span>The repo also includes schema and seed files so the professor can review the database portion of the project.</span>
+                <strong>Courses</strong>
+                <span>Sessions are linked to courses.</span>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-number">L</div>
+              <div>
+                <strong>Locations</strong>
+                <span>Sessions take place in buildings and rooms.</span>
               </div>
             </div>
           </div>
@@ -206,19 +204,17 @@
       </div>
     </section>
 
-    <section class="cta" id="get-started">
+    <section class="cta">
       <div class="container">
         <div class="cta-box">
           <div>
-            <h2 style="margin:0; font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em;">Try the current milestone</h2>
-            <p>
-              Use the Register page to create a sample account, then use the Login page to sign in with the same credentials.
-              This shows the two functional requirements currently included for the GitHub code review submission.
-            </p>
+            <h2 style="margin:0;">Get started</h2>
+            <p>Create an account and start organizing study sessions.</p>
           </div>
-          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+
+          <div style="display:flex; gap:12px;">
             <a class="btn btn-primary" href="register.jsp">Register</a>
-            <a class="btn btn-secondary" href="login.jsp" style="background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.14);">Login</a>
+            <a class="btn btn-secondary" href="login.jsp">Login</a>
           </div>
         </div>
       </div>
@@ -227,7 +223,7 @@
 
   <footer class="footer">
     <div class="container">
-      Team 7 · Study Session · Main webpage for code review milestone with Account Registration and Account Login
+      Study Session · Student collaboration platform
     </div>
   </footer>
 </body>
