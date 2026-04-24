@@ -21,9 +21,8 @@ String role = (String) session.getAttribute("role");
         <a class="nav-link" href="create_session.jsp">Create Session</a>
         <a class="nav-link" href="search_sessions.jsp">Search Session</a>
         <a class="nav-link" href="view_sessions.jsp">My Sessions</a>
-          <!-- NEW LINKS -->
-  <a class="nav-link" href="view_courses.jsp">View Courses</a>
-  <a class="nav-link" href="view_rooms.jsp">View Rooms</a>
+        <a class="nav-link" href="student_view_course.jsp">View Courses</a>
+        <a class="nav-link" href="student_view_room.jsp">View Rooms</a>
       <% } %>
 
       <% if ("admin".equals(role)) { %>
@@ -32,6 +31,10 @@ String role = (String) session.getAttribute("role");
         <a class="nav-link" href="admin_add_room.jsp">Add Room</a>
         <a class="nav-link" href="admin_add_course.jsp">Add Course</a>
         <a class="nav-link" href="search_user.jsp">Search Users</a>
+      <% } %>
+
+      <% if (role != null) { %>
+        <a class="nav-link" href="logout.jsp" style="margin-left: 12px;">Log Out</a>
       <% } %>
     </div>
   </div>

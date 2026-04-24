@@ -42,13 +42,13 @@
          if (email != null && password != null) {
            try {
              Connection con;
-             Class.forName("com.mysql.jdbc.Driver");
+             Class.forName("com.mysql.cj.jdbc.Driver");
 
              con = DriverManager.getConnection(
-               "jdbc:mysql://127.0.0.1:3306/project?autoReconnect=true&useSSL=false",
-               user,
-               databasePassword
-             );
+            		  "jdbc:mysql://127.0.0.1:3306/project?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
+            		  user,
+            		  databasePassword
+            		);
 
              Statement stmt = con.createStatement();
 
