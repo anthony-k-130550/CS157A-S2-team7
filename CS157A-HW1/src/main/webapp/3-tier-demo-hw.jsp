@@ -39,6 +39,7 @@
         } catch(SQLException e) {
             out.println("SQLException caught: " + e.getMessage());
         }
+        // i have to edit a file to hopefully get the folder name to change, this is a small edit
     %>
     </table>
 </body>
