@@ -6,7 +6,7 @@ This project uses MySQL.
 3. Run `seed.sql`
 
 ## Database name
-`study_sessions_db`
+`project`
 
 ## Notes
 - This creates all required tables
