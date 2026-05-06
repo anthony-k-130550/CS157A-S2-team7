@@ -1,7 +1,7 @@
 <%@ page import="java.sql.*"%>
 <%
-String role = (String) session.getAttribute("role");
-if (!"admin".equals(role)) {
+String currentRole = (String) session.getAttribute("role");
+if (!"admin".equals(currentRole)) {
     response.sendRedirect("login.jsp");
     return;
 }
