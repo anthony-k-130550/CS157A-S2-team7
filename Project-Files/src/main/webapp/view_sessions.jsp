@@ -126,17 +126,26 @@ function getReason(sessionID, userID) {
         rs = ps.executeQuery();
 
         while (rs.next()) {
-            out.println("<tr>");
-            out.println("<td>" + rs.getInt("sessionID") + "</td>");
-            out.println("<td>" + rs.getString("title") + "</td>");
-            out.println("<td>" + rs.getTime("startTime") + "</td>");
-            out.println("<td>" + rs.getTime("endTime") + "</td>");
-            out.println("<td>" + rs.getDate("day") + "</td>");
-            out.println("<td>" + rs.getInt("capacity") + "</td>");
-            out.println("<td>" + rs.getString("description") + "</td>");
-            out.println("<td><button type='button' class='btn btn-secondary' onclick=\"window.location.href='leave_intermediate.jsp?sessionID="
-                + rs.getInt(1) + "&userID=" + userID + "'\">Leave</button></td>");
-            out.println("</tr>");
+        	String deletedQuery = "SELECT * FROM deletes WHERE SessionID=" + rs.getInt(1);
+            Statement deleteStatement = con.createStatement();
+            ResultSet rsDeleted = deleteStatement.executeQuery(deletedQuery);
+
+            if (!rsDeleted.next()) {
+	            out.println("<tr>");
+	            out.println("<td>" + rs.getInt("sessionID") + "</td>");
+	            out.println("<td>" + rs.getString("title") + "</td>");
+	            out.println("<td>" + rs.getTime("startTime") + "</td>");
+	            out.println("<td>" + rs.getTime("endTime") + "</td>");
+	            out.println("<td>" + rs.getDate("day") + "</td>");
+	            out.println("<td>" + rs.getInt("capacity") + "</td>");
+	            out.println("<td>" + rs.getString("description") + "</td>");
+	            out.println("<td><button type='button' class='btn btn-secondary' onclick=\"window.location.href='leave_intermediate.jsp?sessionID="
+	                + rs.getInt(1) + "&userID=" + userID + "'\">Leave</button></td>");
+	            out.println("</tr>");
+            }
+
+            if (deleteStatement != null) deleteStatement.close();
+            if (rsDeleted != null) rsDeleted.close();
         }
 
         out.println("</tbody>");

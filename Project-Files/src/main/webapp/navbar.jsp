@@ -27,6 +27,7 @@ String role = (String) session.getAttribute("role");
 
       <% if ("admin".equals(role)) { %>
         <a class="nav-link" href="admin_dashboard.jsp">Dashboard</a>
+        <a class="nav-link" href="search_sessions.jsp">Search Session</a>
         <a class="nav-link" href="admin_locations.jsp">Locations</a>
         <a class="nav-link" href="admin_courses.jsp">Courses</a>
         <a class="nav-link" href="search_user.jsp">Search Users</a>
