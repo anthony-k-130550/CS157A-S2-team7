@@ -1,7 +1,117 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*"%>
-<%@ page import="java.sql.ResultSet" %>
+
+<%
+request.setCharacterEncoding("UTF-8");
+
+String dbUrl = "jdbc:mysql://localhost:3306/project?autoReconnect=true&useSSL=false";
+String dbUser = "root";
+String dbPassword = "CS157ALG";
+
+String successMessage = null;
+String errorMessage = null;
+
+if ("POST".equalsIgnoreCase(request.getMethod())) {
+    String title = request.getParameter("title");
+    String startTime = request.getParameter("startTime");
+    String endTime = request.getParameter("endTime");
+    String day = request.getParameter("day");
+    String capacityStr = request.getParameter("capacity");
+    String courseIDStr = request.getParameter("courseID");
+    String roomLocation = request.getParameter("roomLocation");
+    String description = request.getParameter("description");
+
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+
+    try {
+        int capacity = Integer.parseInt(capacityStr);
+        int courseID = Integer.parseInt(courseIDStr);
+
+        String[] roomParts = roomLocation.split("\\|\\|");
+        int room = Integer.parseInt(roomParts[0]);
+        String building = roomParts[1];
+
+        Class.forName("com.mysql.jdbc.Driver");
+        con = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        con.setAutoCommit(false);
+
+        int userID = (Integer) session.getAttribute("userID");
+
+        ps = con.prepareStatement("SELECT 1 FROM Disables WHERE StudentUserID = ?");
+        ps.setInt(1, userID);
+        rs = ps.executeQuery();
+
+        if (rs.next()) {
+            errorMessage = "Your account has been disabled. Please contact an administrator.";
+        } else {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+
+            ps = con.prepareStatement(
+                "INSERT INTO StudySession (Title, StartTime, EndTime, Day, Capacity, Description) VALUES (?, ?, ?, ?, ?, ?)",
+                Statement.RETURN_GENERATED_KEYS
+            );
+
+            ps.setString(1, title);
+            ps.setString(2, startTime);
+            ps.setString(3, endTime);
+            ps.setString(4, day);
+            ps.setInt(5, capacity);
+            ps.setString(6, description);
+
+            ps.executeUpdate();
+
+            rs = ps.getGeneratedKeys();
+
+            int sessionId = -1;
+            if (rs.next()) {
+                sessionId = rs.getInt(1);
+            }
+
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+
+            ps = con.prepareStatement("INSERT INTO StudyingFor (SessionID, CourseID) VALUES (?, ?)");
+            ps.setInt(1, sessionId);
+            ps.setInt(2, courseID);
+            ps.executeUpdate();
+
+            if (ps != null) ps.close();
+
+            ps = con.prepareStatement("INSERT INTO TakesPlaceIn (RoomID, BuildingName, SessionID) VALUES (?, ?, ?)");
+            ps.setInt(1, room);
+            ps.setString(2, building);
+            ps.setInt(3, sessionId);
+            ps.executeUpdate();
+
+            if (ps != null) ps.close();
+
+            ps = con.prepareStatement("INSERT INTO Creates (StudentUserID, SessionID, SuccessStatus) VALUES (?, ?, ?)");
+            ps.setInt(1, userID);
+            ps.setInt(2, sessionId);
+            ps.setString(3, "successfully created");
+            ps.executeUpdate();
+
+            con.commit();
+
+            response.sendRedirect("view_sessions.jsp");
+            return;
+        }
+
+    } catch (Exception e) {
+        if (con != null) {
+            try { con.rollback(); } catch (Exception rollbackError) {}
+        }
+        errorMessage = "Something went wrong: " + e.getMessage();
+    } finally {
+        try { if (rs != null) rs.close(); } catch (Exception e) {}
+        try { if (ps != null) ps.close(); } catch (Exception e) {}
+        try { if (con != null) con.close(); } catch (Exception e) {}
+    }
+}
+%>
 
 <!DOCTYPE html>
 <html>
@@ -25,6 +135,19 @@
     </div>
 
     <div class="card">
+
+      <% if (successMessage != null) { %>
+        <div style="margin-bottom:18px; padding:12px 14px; border-radius:14px; background:#f4f8f6; color:#0f766e; border:1px solid rgba(15,118,110,0.18);">
+          <%= successMessage %>
+        </div>
+      <% } %>
+
+      <% if (errorMessage != null) { %>
+        <div style="margin-bottom:18px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);">
+          <%= errorMessage %>
+        </div>
+      <% } %>
+
       <form method="post">
         <div class="grid grid-2">
           <div class="field">
@@ -53,18 +176,89 @@
           </div>
 
           <div class="field">
-            <label for="course">Course</label>
-            <input type="text" id="course" name="course" required>
+            <label for="courseID">Course</label>
+            <select id="courseID" name="courseID" required>
+              <option value="">Select a course</option>
+
+<%
+Connection optionCon = null;
+PreparedStatement coursePs = null;
+ResultSet courseRs = null;
+
+try {
+    Class.forName("com.mysql.jdbc.Driver");
+    optionCon = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+
+    coursePs = optionCon.prepareStatement(
+        "SELECT CourseID, Department, CourseNumber, CourseName FROM Course ORDER BY Department, CourseNumber"
+    );
+
+    courseRs = coursePs.executeQuery();
+
+    while (courseRs.next()) {
+        int courseID = courseRs.getInt("CourseID");
+        String department = courseRs.getString("Department");
+        int courseNumber = courseRs.getInt("CourseNumber");
+        String courseName = courseRs.getString("CourseName");
+%>
+              <option value="<%= courseID %>">
+                <%= department %> <%= courseNumber %> - <%= courseName %>
+              </option>
+<%
+    }
+} catch (Exception e) {
+%>
+              <option value="">Could not load courses</option>
+<%
+} finally {
+    try { if (courseRs != null) courseRs.close(); } catch (Exception e) {}
+    try { if (coursePs != null) coursePs.close(); } catch (Exception e) {}
+}
+%>
+            </select>
           </div>
 
           <div class="field">
-            <label for="building">Building</label>
-            <input type="text" id="building" name="building" required>
-          </div>
+            <label for="roomLocation">Room / Building</label>
+            <select id="roomLocation" name="roomLocation" required>
+              <option value="">Select a room</option>
 
-          <div class="field">
-            <label for="room">Room</label>
-            <input type="number" id="room" name="room" required>
+<%
+PreparedStatement roomPs = null;
+ResultSet roomRs = null;
+
+try {
+    if (optionCon == null || optionCon.isClosed()) {
+        Class.forName("com.mysql.jdbc.Driver");
+        optionCon = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+    }
+
+    roomPs = optionCon.prepareStatement(
+        "SELECT RoomID, BuildingName FROM Room ORDER BY BuildingName, RoomID"
+    );
+
+    roomRs = roomPs.executeQuery();
+
+    while (roomRs.next()) {
+        int roomID = roomRs.getInt("RoomID");
+        String buildingName = roomRs.getString("BuildingName");
+%>
+              <option value="<%= roomID %>||<%= buildingName %>">
+                <%= buildingName %> - Room <%= roomID %>
+              </option>
+<%
+    }
+} catch (Exception e) {
+%>
+              <option value="">Could not load rooms</option>
+<%
+} finally {
+    try { if (roomRs != null) roomRs.close(); } catch (Exception e) {}
+    try { if (roomPs != null) roomPs.close(); } catch (Exception e) {}
+    try { if (optionCon != null) optionCon.close(); } catch (Exception e) {}
+}
+%>
+            </select>
           </div>
         </div>
 
@@ -73,181 +267,10 @@
           <input type="text" id="description" name="description">
         </div>
 
-        <div class="form-actions">
+        <div class="form-actions" style="margin-top:18px;">
           <button type="submit" class="btn btn-primary">Create Session</button>
         </div>
       </form>
-
-<%
-if ("POST".equalsIgnoreCase(request.getMethod())) {
-
-    String title = request.getParameter("title");
-    String startTime = request.getParameter("startTime");
-    String endTime = request.getParameter("endTime");
-    String day = request.getParameter("day");
-    int capacity = Integer.parseInt(request.getParameter("capacity"));
-    int room = Integer.parseInt(request.getParameter("room"));
-    String building = request.getParameter("building");
-    String course = request.getParameter("course");
-    String description = request.getParameter("description");
-
-    String db = "project";
-    String user;
-    user = "root";
-    String password = "CS157ALG";
-    java.sql.Connection con = null;
-
-    try {
-        Class.forName("com.mysql.jdbc.Driver");
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?autoReconnect=true&useSSL=false", user, password);
-
-        int userID = (Integer) session.getAttribute("userID");
-
-        String disableQuery = "SELECT * FROM disables WHERE StudentUserID=" + userID;
-        Statement disableStmt = con.createStatement();
-        ResultSet disableRS = disableStmt.executeQuery(disableQuery);
-
-        if (!disableRS.next()) {
-            String sql = "SELECT 1 FROM room WHERE RoomID = ? AND BuildingName = ? LIMIT 1";
-            String sql2 = "SELECT 1 FROM course WHERE CourseName = ? LIMIT 1";
-
-            PreparedStatement ps = con.prepareStatement(sql);
-            PreparedStatement ps2 = con.prepareStatement(sql2);
-
-            ps.setInt(1, room);
-            ps.setString(2, building);
-            ps2.setString(1, course);
-
-            ResultSet rs = ps.executeQuery();
-            ResultSet rs2 = ps2.executeQuery();
-
-            boolean roomExist = rs.next();
-            boolean courseExist = rs2.next();
-
-            if (rs != null) rs.close();
-            if (ps != null) ps.close();
-            if (rs2 != null) rs2.close();
-            if (ps2 != null) ps2.close();
-
-            if (roomExist && courseExist) {
-
-                sql = "INSERT INTO StudySession (Title, StartTime, EndTime, Day, Capacity, Description) VALUES (?, ?, ?, ?, ?, ?)";
-                ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-                ps.setString(1, title);
-                ps.setString(2, startTime);
-                ps.setString(3, endTime);
-                ps.setString(4, day);
-                ps.setInt(5, capacity);
-                ps.setString(6, description);
-
-                int rows = ps.executeUpdate();
-
-                rs = ps.getGeneratedKeys();
-
-                int sessionId = -1;
-
-                if (rs.next()) {
-                    sessionId = rs.getInt(1);
-                }
-
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-
-                if (rows > 0) {
-                    out.println("<div style='margin-top:18px; padding:12px 14px; border-radius:14px; background:#f4f8f6; color:#0f766e; border:1px solid rgba(15,118,110,0.18);'>Session inserted successfully.</div>");
-                } else {
-                    out.println("<div style='margin-top:18px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Insert failed.</div>");
-                }
-
-                sql = "SELECT CourseID FROM course WHERE CourseName = ?";
-                ps = con.prepareStatement(sql);
-                ps.setString(1, course);
-                rs = ps.executeQuery();
-
-                int courseID = -1;
-
-                if (rs.next()) {
-                    courseID = rs.getInt("CourseID");
-                }
-
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-
-                sql = "INSERT INTO studyingfor (SessionID, CourseID) VALUES (?, ?)";
-                ps = con.prepareStatement(sql);
-                ps.setInt(1, sessionId);
-                ps.setInt(2, courseID);
-                rows = ps.executeUpdate();
-
-                if (rows > 0) {
-                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#f4f8f6; color:#0f766e; border:1px solid rgba(15,118,110,0.18);'>Course link added successfully.</div>");
-                } else {
-                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Failed to update studyingfor.</div>");
-                }
-
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-
-                sql = "INSERT INTO takesplacein (RoomID, BuildingName, SessionID) VALUES (?, ?, ?)";
-                ps = con.prepareStatement(sql);
-                ps.setInt(1, room);
-                ps.setString(2, building);
-                ps.setInt(3, sessionId);
-
-                rows = ps.executeUpdate();
-
-                if (rows > 0) {
-                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#f4f8f6; color:#0f766e; border:1px solid rgba(15,118,110,0.18);'>Location added successfully.</div>");
-                } else {
-                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Failed to update takesplacein.</div>");
-                }
-
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-
-                sql = "INSERT INTO creates (StudentUserID, SessionID, SuccessStatus) VALUES (?, ?, ?)";
-                ps = con.prepareStatement(sql);
-                ps.setInt(1, userID);
-                ps.setInt(2, sessionId);
-                ps.setString(3, "successfully created");
-
-                rows = ps.executeUpdate();
-
-                if (rows > 0) {
-                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#f4f8f6; color:#0f766e; border:1px solid rgba(15,118,110,0.18);'>Creator record saved successfully.</div>");
-                } else {
-                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Failed to update creates table.</div>");
-                }
-
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-
-                response.sendRedirect("view_sessions.jsp");
-
-            } else if (!roomExist || !courseExist) {
-                if (!roomExist) {
-                    out.println("<div style='margin-top:18px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Entered room and building do not exist.</div>");
-                }
-                if (!courseExist) {
-                    out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Entered course does not exist.</div>");
-                }
-                out.println("<div style='margin-top:12px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Insert failed.</div>");
-            }
-        } else {
-            out.println("<div style='margin-top:18px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>Your account has been disabled. Please contact an administrator.</div>");
-        }
-
-    } catch(SQLException e) {
-        out.println("<div style='margin-top:18px; padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);'>SQLException caught: " + e.getMessage() + "</div>");
-        e.printStackTrace();
-    } finally {
-        if (con != null) {
-            try { con.close(); } catch (Exception e) {}
-        }
-    }
-}
-%>
 
     </div>
   </div>
