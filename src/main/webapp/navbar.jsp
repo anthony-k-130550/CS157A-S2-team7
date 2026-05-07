@@ -30,6 +30,7 @@ String role = (String) session.getAttribute("role");
         <a class="nav-link" href="admin_locations.jsp">Locations</a>
         <a class="nav-link" href="admin_courses.jsp">Courses</a>
         <a class="nav-link" href="search_user.jsp">Search Users</a>
+        
       <% } %>
 
       <% if (role != null) { %>

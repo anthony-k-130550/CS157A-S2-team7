@@ -180,6 +180,53 @@ if ("updateCourse".equals(action)) {
     }
 }
 
+if ("deleteSession".equals(action)) {
+    String sessionIDStr = request.getParameter("SessionID");
+    if (sessionIDStr != null && !sessionIDStr.trim().isEmpty()) {
+        Connection con = null;
+        PreparedStatement delSess = null;
+        try {
+            int sessionID = Integer.parseInt(sessionIDStr);
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            con.setAutoCommit(false);
+
+            String[] linkTables = {"StudyingFor", "TakesPlaceIn", "Joins", "Creates", "Deletes"};
+            for (String t : linkTables) {
+                if (tableExists(con, t) && columnExists(con, t, "SessionID")) {
+                    PreparedStatement ps = null;
+                    try {
+                        ps = con.prepareStatement("DELETE FROM " + t + " WHERE SessionID = ?");
+                        ps.setInt(1, sessionID);
+                        ps.executeUpdate();
+                    } finally {
+                        try { if (ps != null) ps.close(); } catch (Exception e) {}
+                    }
+                }
+            }
+
+            delSess = con.prepareStatement("DELETE FROM StudySession WHERE SessionID = ?");
+            delSess.setInt(1, sessionID);
+            int result = delSess.executeUpdate();
+            if (result > 0) {
+                con.commit();
+                successMessage = "Successfully deleted session ID " + sessionID + ".";
+            } else {
+                con.rollback();
+                errorMessage = "Session not found.";
+            }
+        } catch (NumberFormatException e) {
+            errorMessage = "Session ID must be a valid integer.";
+        } catch (Exception e) {
+            try { if (con != null) con.rollback(); } catch (Exception ex) {}
+            errorMessage = cleanErrorMessage(e);
+        } finally {
+            try { if (delSess != null) delSess.close(); } catch (Exception e) {}
+            try { if (con != null) { con.setAutoCommit(true); con.close(); } } catch (Exception e) {}
+        }
+    }
+}
+
 if ("deleteCourse".equals(action)) {
     String courseIDStr = request.getParameter("CourseID");
     if (courseIDStr != null && !courseIDStr.trim().isEmpty()) {
@@ -274,6 +321,119 @@ if ("deleteCourse".equals(action)) {
       <h2 style="margin-top:0; margin-bottom:14px;">Course List</h2>
 
 <%
+String sessionSearch = request.getParameter("sessionSearch");
+if (sessionSearch == null) sessionSearch = "";
+String sessionSearchTrim = sessionSearch.trim();
+boolean hasSearch = !sessionSearchTrim.isEmpty();
+%>
+      <%
+      boolean showAll = "1".equals(request.getParameter("showAll"));
+      String searchQs = hasSearch ? ("sessionSearch=" + java.net.URLEncoder.encode(sessionSearchTrim, "UTF-8")) : "";
+      %>
+      <form method="get" style="margin-bottom:14px; display:flex; gap:8px; align-items:end; flex-wrap:wrap;">
+        <div class="field" style="flex:1; min-width:220px; margin:0;">
+          <label for="sessionSearch">Search Sessions</label>
+          <input type="text" id="sessionSearch" name="sessionSearch" value="<%= sessionSearchTrim.replace("\"", "&quot;") %>" placeholder="Search by title, description, or day (YYYY-MM-DD)">
+        </div>
+        <% if (showAll) { %><input type="hidden" name="showAll" value="1"><% } %>
+        <button type="submit" class="btn btn-secondary">Search</button>
+        <% if (hasSearch) { %>
+          <a href="admin_courses.jsp<%= showAll ? "?showAll=1" : "" %>" class="btn btn-primary">Clear</a>
+        <% } %>
+        <% if (showAll) { %>
+          <a href="admin_courses.jsp<%= hasSearch ? ("?" + searchQs) : "" %>" class="btn btn-secondary">Hide All Sessions</a>
+        <% } else { %>
+          <a href="admin_courses.jsp?showAll=1<%= hasSearch ? ("&" + searchQs) : "" %>" class="btn btn-secondary">Show All Sessions</a>
+        <% } %>
+      </form>
+
+<%
+if (showAll) {
+    Connection scon = null;
+    PreparedStatement sps = null;
+    ResultSet srs = null;
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        scon = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        String sql = "SELECT SessionID, Title, Day, StartTime, EndTime, Capacity, Description FROM StudySession";
+        if (hasSearch) {
+            sql += " WHERE (Title LIKE ? OR Description LIKE ? OR CAST(Day AS CHAR) LIKE ? OR CAST(SessionID AS CHAR) = ?)";
+        }
+        sql += " ORDER BY Day, StartTime";
+        sps = scon.prepareStatement(sql);
+        if (hasSearch) {
+            String like = "%" + sessionSearchTrim + "%";
+            sps.setString(1, like);
+            sps.setString(2, like);
+            sps.setString(3, like);
+            sps.setString(4, sessionSearchTrim);
+        }
+        srs = sps.executeQuery();
+%>
+      <div style="margin-bottom:18px; padding:14px; border:1px solid rgba(0,0,0,0.08); border-radius:14px; background:#f8fafc;">
+        <h3 style="margin-top:0;">All Sessions<%= hasSearch ? " (filtered)" : "" %></h3>
+<%
+        boolean anyS = false;
+        while (srs.next()) {
+            anyS = true;
+            int sid = srs.getInt("SessionID");
+            String title = srs.getString("Title");
+            Date day = srs.getDate("Day");
+            Time start = srs.getTime("StartTime");
+            Time end = srs.getTime("EndTime");
+            int cap = srs.getInt("Capacity");
+            String desc = srs.getString("Description");
+%>
+        <div class="session-pill">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <div style="font-weight:600;">
+              <%= title == null ? "(untitled)" : title %>
+              <span class="muted" style="font-weight:400;">#<%= sid %></span>
+            </div>
+            <form method="post" style="margin:0;" onsubmit="return confirm('Delete session <%= sid %>? This also removes its links.');">
+              <input type="hidden" name="action" value="deleteSession">
+              <input type="hidden" name="SessionID" value="<%= sid %>">
+              <button type="submit" class="btn btn-primary" style="padding:4px 10px; font-size:12px;">Delete Session</button>
+            </form>
+          </div>
+          <div class="session-meta">
+            <strong>Day:</strong> <%= day == null ? "-" : day.toString() %> &nbsp; | &nbsp;
+            <strong>Time:</strong> <%= start == null ? "-" : start.toString() %> to <%= end == null ? "-" : end.toString() %> &nbsp; | &nbsp;
+            <strong>Capacity:</strong> <%= cap %>
+          </div>
+<%
+            if (desc != null && !desc.trim().isEmpty()) {
+%>
+          <div class="session-meta"><strong>Description:</strong> <%= desc %></div>
+<%
+            }
+%>
+        </div>
+<%
+        }
+        if (!anyS) {
+%>
+        <p class="muted" style="margin:0;">No sessions found.</p>
+<%
+        }
+%>
+      </div>
+<%
+    } catch (Exception e) {
+%>
+      <div style="padding:12px 14px; border-radius:14px; background:#fef3f2; color:#b42318; border:1px solid rgba(180,35,24,0.18);">
+        <%= cleanErrorMessage(e) %>
+      </div>
+<%
+    } finally {
+        try { if (srs != null) srs.close(); } catch (Exception e) {}
+        try { if (sps != null) sps.close(); } catch (Exception e) {}
+        try { if (scon != null) scon.close(); } catch (Exception e) {}
+    }
+}
+%>
+
+<%
 Connection con = null;
 Statement stmt = null;
 ResultSet rs = null;
@@ -306,12 +466,22 @@ try {
             PreparedStatement sps = null;
             ResultSet srs = null;
             try {
-                sps = con.prepareStatement(
-                    "SELECT s.SessionID, s.Title, s.Day, s.StartTime, s.EndTime, s.Capacity, s.Description "
+                String sql = "SELECT s.SessionID, s.Title, s.Day, s.StartTime, s.EndTime, s.Capacity, s.Description "
                     + "FROM StudyingFor sf JOIN StudySession s ON sf.SessionID = s.SessionID "
-                    + "WHERE sf.CourseID = ? ORDER BY s.Day, s.StartTime"
-                );
+                    + "WHERE sf.CourseID = ?";
+                if (hasSearch) {
+                    sql += " AND (s.Title LIKE ? OR s.Description LIKE ? OR CAST(s.Day AS CHAR) LIKE ? OR CAST(s.SessionID AS CHAR) = ?)";
+                }
+                sql += " ORDER BY s.Day, s.StartTime";
+                sps = con.prepareStatement(sql);
                 sps.setInt(1, courseID);
+                if (hasSearch) {
+                    String like = "%" + sessionSearchTrim + "%";
+                    sps.setString(2, like);
+                    sps.setString(3, like);
+                    sps.setString(4, like);
+                    sps.setString(5, sessionSearchTrim);
+                }
                 srs = sps.executeQuery();
                 while (srs.next()) {
                     sessionCount++;
@@ -324,9 +494,19 @@ try {
                     String desc = srs.getString("Description");
 
                     sessionHtml.append("<div class=\"session-pill\">");
+                    sessionHtml.append("<div style=\"display:flex; justify-content:space-between; align-items:center; gap:8px;\">");
                     sessionHtml.append("<div style=\"font-weight:600;\">")
                                .append(title == null ? "(untitled)" : title)
                                .append(" <span class=\"muted\" style=\"font-weight:400;\">#").append(sid).append("</span></div>");
+                    String confirmMsg = "Delete session " + sid + "? This also removes its course links.";
+                    sessionHtml.append("<form method=\"post\" style=\"margin:0;\" onsubmit=\"return confirm('")
+                               .append(confirmMsg)
+                               .append("');\">")
+                               .append("<input type=\"hidden\" name=\"action\" value=\"deleteSession\">")
+                               .append("<input type=\"hidden\" name=\"SessionID\" value=\"").append(sid).append("\">")
+                               .append("<button type=\"submit\" class=\"btn btn-primary\" style=\"padding:4px 10px; font-size:12px;\">Delete Session</button>")
+                               .append("</form>");
+                    sessionHtml.append("</div>");
                     sessionHtml.append("<div class=\"session-meta\">");
                     sessionHtml.append("<strong>Day:</strong> ").append(day == null ? "-" : day.toString()).append(" &nbsp; | &nbsp; ");
                     sessionHtml.append("<strong>Time:</strong> ")
